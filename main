@@ -1,7 +1,7 @@
 import random
 from collections import deque
 
-
+# ------------------ Clases y Funciones Base ------------------
 
 class NodoHabilidad:
     def __init__(self, nombre, puntos):
@@ -29,6 +29,6 @@ def mostrar_arbol(nodo, nivel=0):
         mostrar_arbol(nodo.izquierda, nivel + 2)
         mostrar_arbol(nodo.derecha, nivel + 2)
 
+# ------------------ Datos Iniciales ------------------
 
-
-personajes = {"Hajime Saitō", "Himura Kenshin"}  
+personajes = {"Hajime Saitō", "Himura Kenshin"}
