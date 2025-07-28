@@ -170,4 +170,22 @@ class Ninja:
         habilidades_str = ";".join([f"{n}|{t}|{v}" for n, t, v in habilidades_planas])
         return (f"{self.nombre},{self.fuerza},{self.agilidad},{self.resistencia},"
                 f"{self.estilo},{self.puntos_victoria},{habilidades_str}\n")
+    @classmethod
+    def desde_cadena(cls, cadena):
+        """Crea un objeto Ninja desde una cadena de .txt, reconstruyendo el árbol de habilidades."""
+        partes = cadena.strip().split(',')
+        if len(partes) == 7:
+            nombre, fuerza, agilidad, resistencia, estilo, puntos_victoria_str, habilidades_str = partes
+            ninja = cls(nombre, int(fuerza), int(agilidad), int(resistencia), estilo)
+            ninja.puntos_victoria = float(puntos_victoria_str)
 
+            if habilidades_str:
+                habilidades_cargadas = []
+                for habilidad_info in habilidades_str.split(';'):
+                    if habilidad_info:
+                        h_partes = habilidad_info.split('|')
+                        if len(h_partes) == 3:
+                            habilidades_cargadas.append((h_partes[0], h_partes[1], int(h_partes[2])))
+                ninja.habilidades = ArbolBinarioHabilidades.desde_habilidades_planas(habilidades_cargadas)
+            return ninja
+        return None
