@@ -41,3 +41,28 @@ class NodoHabilidad:
      def __str__(self):
         return f"Habilidad: {self.nombre} ({self.tipo}, Valor: {self.valor})"
         
+class ArbolBinarioHabilidades:
+    def __init__(self):
+        self.raiz = None
+
+    def insertar_habilidad(self, nombre, tipo, valor):
+        """Inserta una nueva habilidad en el árbol (implementación simple de BST por nombre)."""
+        nuevo_nodo = NodoHabilidad(nombre, tipo, valor)
+        if self.raiz is None:
+            self.raiz = nuevo_nodo
+        else:
+            self._insertar_recursivo(self.raiz, nuevo_nodo)
+
+    def _insertar_recursivo(self, nodo_actual, nuevo_nodo):
+        if nuevo_nodo.nombre.lower() == nodo_actual.nombre.lower():
+            return
+        elif nuevo_nodo.nombre.lower() < nodo_actual.nombre.lower():
+            if nodo_actual.izquierda is None:
+                nodo_actual.izquierda = nuevo_nodo
+            else:
+                self._insertar_recursivo(nodo_actual.izquierda, nuevo_nodo)
+        else:
+            if nodo_actual.derecha is None:
+                nodo_actual.derecha = nuevo_nodo
+            else:
+                self._insertar_recursivo(nodo_actual.derecha, nuevo_nodo)
