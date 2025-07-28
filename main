@@ -66,3 +66,53 @@ class ArbolBinarioHabilidades:
                 nodo_actual.derecha = nuevo_nodo
             else:
                 self._insertar_recursivo(nodo_actual.derecha, nuevo_nodo)
+def recorrido_inorden(self):
+        """Devuelve una lista de nombres de habilidades en recorrido inorden (Izquierda, Raíz, Derecha)."""
+        habilidades = []
+        self._inorden_recursivo(self.raiz, habilidades)
+        return habilidades
+
+    def _inorden_recursivo(self, nodo, habilidades):
+        if nodo:
+            self._inorden_recursivo(nodo.izquierda, habilidades)
+            habilidades.append(nodo.nombre)
+            self._inorden_recursivo(nodo.derecha, habilidades)
+
+    def obtener_habilidades_planas(self):
+        """Devuelve todas las habilidades del árbol como una lista de tuplas (nombre, tipo, valor)."""
+        habilidades_planas = []
+        self._inorden_habilidades_con_tipo_recursivo(self.raiz, habilidades_planas)
+        return habilidades_planas
+
+    def _inorden_habilidades_con_tipo_recursivo(self, nodo, habilidades_planas):
+        if nodo:
+            self._inorden_habilidades_con_tipo_recursivo(nodo.izquierda, habilidades_planas)
+            habilidades_planas.append((nodo.nombre, nodo.tipo, nodo.valor))
+            self._inorden_habilidades_con_tipo_recursivo(nodo.derecha, habilidades_planas)
+
+    def obtener_habilidades_por_valor(self):
+        """Devuelve todas las habilidades del árbol como una lista de tuplas (nombre, tipo, valor), ordenadas por valor descendente."""
+        habilidades_planas = self.obtener_habilidades_planas()
+        return sorted(habilidades_planas, key=lambda x: x[2], reverse=True)
+
+    @classmethod
+    def desde_habilidades_planas(cls, lista_habilidades_info):
+        """Crea un nuevo árbol e inserta habilidades desde una lista de (nombre, tipo, valor)."""
+        nuevo_arbol = cls()
+        for item in lista_habilidades_info:
+            if len(item) == 3:
+                nombre, tipo, valor = item
+                nuevo_arbol.insertar_habilidad(nombre, tipo, int(valor))
+        return nuevo_arbol
+
+    def buscar_habilidad(self, nombre):
+        """Busca una habilidad por nombre en el árbol. Retorna el NodoHabilidad si lo encuentra, None en caso contrario."""
+        return self._buscar_recursivo(self.raiz, nombre)
+
+    def _buscar_recursivo(self, nodo, nombre_buscar):
+        if nodo is None or nodo.nombre.lower() == nombre_buscar.lower():
+            return nodo
+        if nombre_buscar.lower() < nodo.nombre.lower():
+            return self._buscar_recursivo(nodo.izquierda, nombre_buscar)
+        else:
+            return self._buscar_recursivo(nodo.derecha, nombre_buscar)
