@@ -149,3 +149,25 @@ def recorrido_inorden(self):
         while actual.izquierda is not None:
             actual = actual.izquierda
         return actual
+#se usara esta clase pra ninjas
+class Ninja:
+    def __init__(self, nombre, fuerza, agilidad, resistencia, estilo):
+        self.nombre = nombre
+        self.fuerza = fuerza
+        self.agilidad = agilidad
+        self.resistencia = resistencia
+        self.estilo = estilo
+        self.puntos_victoria = 0.0
+        self.habilidades = ArbolBinarioHabilidades()
+        self.vida_actual = 500 # ¡VIDA VUELVE A 500 HP!
+
+    def __str__(self):
+        return f"Ninja: {self.nombre} | Fuerza: {self.fuerza} | Agilidad: {self.agilidad} | Resistencia: {self.resistencia} | Estilo: {self.estilo} | PV: {self.puntos_victoria:.1f}"
+
+    def a_cadena(self):
+        """Convierte el objeto Ninja a una cadena para guardar en .txt, incluyendo habilidades."""
+        habilidades_planas = self.habilidades.obtener_habilidades_planas()
+        habilidades_str = ";".join([f"{n}|{t}|{v}" for n, t, v in habilidades_planas])
+        return (f"{self.nombre},{self.fuerza},{self.agilidad},{self.resistencia},"
+                f"{self.estilo},{self.puntos_victoria},{habilidades_str}\n")
+
