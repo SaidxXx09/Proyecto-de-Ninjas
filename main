@@ -29,3 +29,11 @@ class Jugador:
             jugador = cls(nombres, identificacion, int(edad), usuario, password, rol)
             return jugador
         return None
+#nodos de arbol de habilidades
+class NodoHabilidad:
+    def __init__(self, nombre_habilidad, tipo_habilidad="generico", valor=0):
+        self.nombre = nombre_habilidad
+        self.tipo = tipo_habilidad
+        self.valor = valor
+        self.izquierda = None
+        self.derecha = None
