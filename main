@@ -116,3 +116,36 @@ def recorrido_inorden(self):
             return self._buscar_recursivo(nodo.izquierda, nombre_buscar)
         else:
             return self._buscar_recursivo(nodo.derecha, nombre_buscar)
+    def eliminar_habilidad(self, nombre):
+        """Elimina una habilidad por su nombre del árbol. Retorna True si se eliminó, False en caso contrario."""
+        if not self.buscar_habilidad(nombre):
+            return False
+        self.raiz = self._eliminar_recursivo(self.raiz, nombre)
+        return True
+
+    def _eliminar_recursivo(self, nodo_actual, nombre_a_eliminar):
+        if nodo_actual is None:
+            return nodo_actual
+
+        if nombre_a_eliminar.lower() < nodo_actual.nombre.lower():
+            nodo_actual.izquierda = self._eliminar_recursivo(nodo_actual.izquierda, nombre_a_eliminar)
+        elif nombre_a_eliminar.lower() > nodo_actual.nombre.lower():
+            nodo_actual.derecha = self._eliminar_recursivo(nodo_actual.derecha, nombre_a_eliminar)
+        else: # Nodo encontrado
+            if nodo_actual.izquierda is None:
+                return nodo_actual.derecha
+            elif nodo_actual.derecha is None:
+                return nodo_actual.izquierda
+
+            temp = self._encontrar_min_valor_nodo(nodo_actual.derecha)
+            nodo_actual.nombre = temp.nombre
+            nodo_actual.tipo = temp.tipo
+            nodo_actual.valor = temp.valor
+            nodo_actual.derecha = self._eliminar_recursivo(nodo_actual.derecha, temp.nombre)
+        return nodo_actual
+
+    def _encontrar_min_valor_nodo(self, nodo):
+        actual = nodo
+        while actual.izquierda is not None:
+            actual = actual.izquierda
+        return actual
