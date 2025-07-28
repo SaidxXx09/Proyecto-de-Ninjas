@@ -1,0 +1,18 @@
+import random
+import os
+#clase y jugador 
+class Jugador:
+    def __init__(self, nombres, identificacion, edad, usuario, password, rol="jugador"):
+        self.nombres = nombres
+        self.identificacion = identificacion
+        self.edad = edad
+        self.usuario = usuario
+        self.password = password
+        self.rol = rol
+
+    def __str__(self):
+        return f"Usuario: {self.usuario} | Nombre: {self.nombres} | Rol: {self.rol}"
+
+    def a_cadena(self):
+        """Convierte el objeto Jugador a una cadena para guardar en .txt"""
+        return f"{self.nombres},{self.identificacion},{self.edad},{self.usuario},{self.password},{self.rol}\n"
