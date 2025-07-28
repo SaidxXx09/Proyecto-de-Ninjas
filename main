@@ -16,3 +16,16 @@ class Jugador:
     def a_cadena(self):
         """Convierte el objeto Jugador a una cadena para guardar en .txt"""
         return f"{self.nombres},{self.identificacion},{self.edad},{self.usuario},{self.password},{self.rol}\n"
+    #co el @classmethod
+    def desde_cadena(cls, cadena):
+        """Crea un objeto Jugador desde una cadena de .txt"""
+        partes = cadena.strip().split(',')
+        if len(partes) == 6:
+            nombres, identificacion, edad, usuario, password, rol = partes
+            jugador = cls(nombres, identificacion, int(edad), usuario, password, rol)
+            return jugador
+        elif len(partes) == 8: # Para compatibilidad con archivos viejos
+            nombres, identificacion, edad, usuario, password, rol, _, _ = partes
+            jugador = cls(nombres, identificacion, int(edad), usuario, password, rol)
+            return jugador
+        return None
