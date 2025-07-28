@@ -189,3 +189,77 @@ class Ninja:
                 ninja.habilidades = ArbolBinarioHabilidades.desde_habilidades_planas(habilidades_cargadas)
             return ninja
         return None
+# GESTIÓN DE ARCHIVOS
+ARCHIVO_USUARIOS = "usuarios.txt"
+ARCHIVO_NINJAS = "ninjas.txt"
+ARCHIVO_COMBATES_GLOBAL = "combates_global.txt" # Para historial global de combates
+
+def cargar_usuarios():
+    """Carga los usuarios registrados desde usuarios.txt."""
+    usuarios = []
+    try:
+        with open(ARCHIVO_USUARIOS, 'r') as f:
+            for linea in f:
+                usuario = Jugador.desde_cadena(linea)
+                if usuario:
+                    usuarios.append(usuario)
+    except FileNotFoundError:
+        pass # No mostrar advertencia si no existe al inicio
+    except Exception as e:
+        print(f"Error al cargar usuarios: {e}")
+    return usuarios
+
+def guardar_usuarios(usuarios):
+    """Guarda la lista de usuarios en usuarios.txt."""
+    try:
+        with open(ARCHIVO_USUARIOS, 'w') as f:
+            for usuario in usuarios:
+                f.write(usuario.a_cadena())
+    except Exception as e:
+        print(f"Error al guardar usuarios: {e}")
+
+def cargar_ninjas():
+    """Carga los ninjas desde ninjas.txt."""
+    ninjas = []
+    try:
+        with open(ARCHIVO_NINJAS, 'r') as f:
+            for linea in f:
+                ninja = Ninja.desde_cadena(linea)
+                if ninja:
+                    ninjas.append(ninja)
+    except FileNotFoundError:
+        pass # No mostrar advertencia si no existe al inicio
+    except Exception as e:
+        print(f"Error al cargar ninjas: {e}")
+    return ninjas
+
+def guardar_ninjas(ninjas):
+    """Guarda la lista de ninjas en ninjas.txt."""
+    try:
+        with open(ARCHIVO_NINJAS, 'w') as f:
+            for ninja in ninjas:
+                f.write(ninja.a_cadena())
+    except Exception as e:
+        print(f"Error al guardar ninjas: {e}")
+
+def registrar_combate_global(log_combate):
+    """Registra un combate en el historial global combates_global.txt."""
+    try:
+        with open(ARCHIVO_COMBATES_GLOBAL, 'a') as f:
+            f.write(f"{log_combate}\n\n")
+    except Exception as e:
+        print(f"Error al registrar combate global: {e}")
+
+def cargar_historial_global_combates():
+    """Carga el historial global de combates desde combates_global.txt."""
+    historial = []
+    try:
+        with open(ARCHIVO_COMBATES_GLOBAL, 'r') as f:
+            contenido = f.read()
+            combates = [c.strip() for c in contenido.split('\n\n') if c.strip()]
+            historial.extend(combates)
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f"Error al cargar historial de combates global: {e}")
+    return historial
