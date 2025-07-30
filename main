@@ -454,3 +454,20 @@ def consultar_ninja():
         print(f"Resistencia: {ninja_encontrado.resistencia}")
         print(f"Estilo: {ninja_encontrado.estilo}")
         print(f"Puntos de Victoria (PV): {ninja_encontrado.puntos_victoria:.1f}")
+        habilidades_encontradas = ninja_encontrado.habilidades.obtener_habilidades_planas()
+        if habilidades_encontradas:
+            print("\nHabilidades (por nombre):")
+            for nombre_h, tipo_h, valor_h in sorted(habilidades_encontradas, key=lambda x: x[0].lower()):
+                print(f"- {nombre_h} (Tipo: {tipo_h}, Poder: {valor_h})")
+
+            habilidades_por_valor = ninja_encontrado.habilidades.obtener_habilidades_por_valor()
+            if habilidades_por_valor:
+                print("\nHabilidades (por valor de poder):")
+                for nombre_h, tipo_h, valor_h in habilidades_por_valor:
+                    print(f"   - {nombre_h} (Tipo: {tipo_h}, Poder: {valor_h})")
+        else:
+            print("Habilidades: ¡Este ninja necesita aprender más jutsus!")
+        print("-" * 30)
+    else:
+        print(f"Ninja '{nombre_buscar}' no encontrado. ¡Parece que no existe en esta aldea!")
+    pausar_consola()
