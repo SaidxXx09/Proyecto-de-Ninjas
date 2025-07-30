@@ -379,3 +379,59 @@ def solicitar_datos_ninja(modo_edicion=False, ninja_existente=None):
                     print("¡Cuidado! El valor debe estar entre 1 y 100.")
             except ValueError:
                 print("¡Error! Ingresa un número válido, por favor.")
+    fuerza = leer_atributo("Fuerza", ninja_existente.fuerza if modo_edicion and ninja_existente else None)
+    agilidad = leer_atributo("Agilidad", ninja_existente.agilidad if modo_edicion and ninja_existente else None)
+    resistencia = leer_atributo("Resistencia", ninja_existente.resistencia if modo_edicion and ninja_existente else None)
+
+    estilos_validos = ["Taijutsu", "Ninjutsu", "Genjutsu", "Mixto"]
+    estilo = ""
+    while estilo not in estilos_validos:
+        prompt_estilo = f"Estilo ({', '.join(estilos_validos)}) (actual: {ninja_existente.estilo if modo_edicion and ninja_existente else 'Ninguno'}): "
+        estilo_input = input(prompt_estilo).strip().capitalize()
+
+        if modo_edicion and estilo_input == "":
+            estilo = ninja_existente.estilo
+            break
+
+        if estilo_input in estilos_validos:
+            estilo = estilo_input
+            break
+        else:
+            print(f"Estilo inválido. Por favor, elige uno de: {', '.join(estilos_validos)}")
+
+    return (nombre_ninja, fuerza, agilidad, resistencia, estilo)
+
+def agregar_nuevo_ninja():
+    """Agrega un nuevo ninja a la lista global."""
+    limpiar_pantalla()
+    print("\n--- ¡Forjando un nuevo guerrero ninja! ---")
+    datos_ninja = solicitar_datos_ninja(modo_edicion=False)
+    if datos_ninja:
+        nombre, fuerza, agilidad, resistencia, estilo = datos_ninja
+        nuevo_ninja = Ninja(nombre, fuerza, agilidad, resistencia, estilo)
+        global_ninjas.append(nuevo_ninja)
+        print(f"¡Ninja '{nombre}' ha sido reclutado exitosamente! Recuerda guardar los cambios.")
+    else:
+        print("Operación de agregar ninja cancelada o fallida. ¡Intenta de nuevo!")
+    pausar_consola()
+
+def listar_ninjas():
+    """Muestra todos los ninjas existentes."""
+    print("\n--- Nuestros valientes Ninjas: ---")
+    if not global_ninjas:
+        print("¡Todavía no hay ninjas registrados en la aldea!")
+        return
+
+    ninjas_ordenados = sorted(global_ninjas, key=lambda ninja: ninja.nombre.lower())
+
+    for i, ninja in enumerate(ninjas_ordenados):
+        print(f"{i+1}. Nombre: {ninja.nombre}")
+        print(f"   Fuerza: {ninja.fuerza}, Agilidad: {ninja.agilidad}, Resistencia: {ninja.resistencia}")
+        print(f"   Estilo: {ninja.estilo}, Puntos de Victoria (PV): {ninja.puntos_victoria:.1f}")
+
+        habilidades_nombres = ninja.habilidades.recorrido_inorden()
+        if habilidades_nombres:
+            print(f"   Habilidades: {', '.join(habilidades_nombres)}")
+        else:
+            print("   Habilidades: Ninguna aún...")
+        print("-" * 30)
