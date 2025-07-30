@@ -263,3 +263,14 @@ def cargar_historial_global_combates():
     except Exception as e:
         print(f"Error al cargar historial de combates global: {e}")
     return historial
+
+# listas
+global_usuarios = []
+global_ninjas = []
+usuario_actual = None
+ninja_seleccionado_jugador = None # ninja del jugador
+
+#esta funcion es para que se limpie la consola
+def limpiar_pantalla():
+    """Limpia la consola."""
+    os.system('cls' if os.name == 'nt' else 'clear')
