@@ -443,3 +443,14 @@ def consultar_ninja():
         print("No hay ninjas registrados para investigar.")
         pausar_consola()
         return
+    nombre_buscar = input("Ingresa el nombre del ninja que quieres consultar: ").strip()
+    ninja_encontrado = buscar_ninja_por_nombre(nombre_buscar)
+
+    if ninja_encontrado:
+        print("\n--- Informe detallado del Ninja ---")
+        print(f"Nombre: {ninja_encontrado.nombre}")
+        print(f"Fuerza: {ninja_encontrado.fuerza}")
+        print(f"Agilidad: {ninja_encontrado.agilidad}")
+        print(f"Resistencia: {ninja_encontrado.resistencia}")
+        print(f"Estilo: {ninja_encontrado.estilo}")
+        print(f"Puntos de Victoria (PV): {ninja_encontrado.puntos_victoria:.1f}")
