@@ -435,3 +435,11 @@ def listar_ninjas():
         else:
             print("   Habilidades: Ninguna aún...")
         print("-" * 30)
+def consultar_ninja():
+    """Permite al administrador consultar los detalles de un ninja específico."""
+    limpiar_pantalla()
+    print("\n--- Espiando los detalles de un Ninja... ---")
+    if not global_ninjas:
+        print("No hay ninjas registrados para investigar.")
+        pausar_consola()
+        return
