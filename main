@@ -285,3 +285,10 @@ def buscar_ninja_por_nombre(nombre_buscar):
         if ninja.nombre.lower() == nombre_buscar.lower():
             return ninja
     return None
+
+def registrar_nuevo_jugador():
+    """Permite a un nuevo usuario registrarse en el sistema."""
+    limpiar_pantalla()
+    print("\n--- ¡Únete a la aventura ninja! REGISTRO ---")
+    nombres = input("Ingresa tus nombres y apellidos: ").strip()
+    identificacion = input("Ingresa tu número de identificación: ").strip()
