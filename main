@@ -307,3 +307,20 @@ def registrar_nuevo_jugador():
                 print("Este correo ya está registrado. Intenta con otro o inicia sesión.")
             else:
                 break
+    while True:
+            password = input("Ingresa una contraseña (mín. 8 caracteres, 1 mayúscula, 1 número): ").strip()
+            if len(password) < 8:
+                print("La contraseña debe tener al menos 8 caracteres.")
+            elif not any(char.isupper() for char in password):
+                print("La contraseña debe contener al menos una letra mayúscula.")
+            elif not any(char.isdigit() for char in password):
+                print("La contraseña debe contener al menos un número.")
+            else:
+                break
+    
+        nuevo_jugador = Jugador(nombres, identificacion, edad, usuario_email, password, "jugador")
+        global_usuarios.append(nuevo_jugador)
+        guardar_usuarios(global_usuarios)
+        print("¡Registro exitoso! ¡Bienvenido a PoliNinjaGames! Ya puedes iniciar sesión.")
+        pausar_consola()
+        return True
