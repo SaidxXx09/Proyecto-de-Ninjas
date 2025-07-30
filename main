@@ -292,3 +292,18 @@ def registrar_nuevo_jugador():
     print("\n--- ¡Únete a la aventura ninja! REGISTRO ---")
     nombres = input("Ingresa tus nombres y apellidos: ").strip()
     identificacion = input("Ingresa tu número de identificación: ").strip()
+     while True:
+            try:
+                edad = int(input("Ingresa tu edad: ").strip())
+                break
+            except ValueError:
+                print("¡Ups! Edad inválida. Por favor, ingresa un número.")
+    
+        while True:
+            usuario_email = input("Ingresa tu correo electrónico (será tu usuario, ej. nombre.apellido@gmail.com): ").strip().lower()
+            if "@" not in usuario_email or "." not in usuario_email:
+                print("Formato de correo inválido. Asegúrate de incluir '@' y '.'")
+            elif any(u.usuario == usuario_email for u in global_usuarios):
+                print("Este correo ya está registrado. Intenta con otro o inicia sesión.")
+            else:
+                break
