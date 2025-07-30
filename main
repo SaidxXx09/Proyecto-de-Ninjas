@@ -274,3 +274,14 @@ ninja_seleccionado_jugador = None # ninja del jugador
 def limpiar_pantalla():
     """Limpia la consola."""
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def pausar_consola():
+    """Pausa la ejecución de la consola hasta que el usuario presione Enter."""
+    input("Presiona Enter para continuar...")
+
+def buscar_ninja_por_nombre(nombre_buscar):
+    """Busca un ninja en global_ninjas por su nombre (insensible a mayúsculas/minúsculas)."""
+    for ninja in global_ninjas:
+        if ninja.nombre.lower() == nombre_buscar.lower():
+            return ninja
+    return None
