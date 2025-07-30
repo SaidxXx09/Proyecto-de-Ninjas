@@ -482,3 +482,24 @@ def actualizar_ninja():
 
     nombre_buscar = input("Ingresa el nombre del ninja que quieres actualizar: ").strip()
     ninja_a_actualizar = buscar_ninja_por_nombre(nombre_buscar)
+    if ninja_a_actualizar:
+        print(f"Ninja '{ninja_a_actualizar.nombre}' encontrado. ¡Vamos a mejorarlo!")
+        print("Ingresa los nuevos datos (deja en blanco para mantener el actual):")
+
+        nuevos_datos = solicitar_datos_ninja(modo_edicion=True, ninja_existente=ninja_a_actualizar)
+
+        if nuevos_datos:
+            nombre_nuevo, fuerza_nueva, agilidad_nueva, resistencia_nueva, estilo_nuevo = nuevos_datos
+
+            ninja_a_actualizar.nombre = nombre_nuevo
+            ninja_a_actualizar.fuerza = fuerza_nueva
+            ninja_a_actualizar.agilidad = agilidad_nueva
+            ninja_a_actualizar.resistencia = resistencia_nueva
+            ninja_a_actualizar.estilo = estilo_nuevo
+
+            print(f"¡Ninja '{ninja_a_actualizar.nombre}' actualizado con éxito! No olvides guardar los cambios.")
+        else:
+            print("Actualización de ninja cancelada o fallida. ¡A veces, el destino no quiere cambios!")
+    else:
+        print(f"Ninja '{nombre_buscar}' no encontrado para actualizar.")
+    pausar_consola()
