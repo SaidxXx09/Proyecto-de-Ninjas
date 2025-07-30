@@ -324,3 +324,58 @@ def registrar_nuevo_jugador():
         print("¡Registro exitoso! ¡Bienvenido a PoliNinjaGames! Ya puedes iniciar sesión.")
         pausar_consola()
         return True
+def iniciar_sesion():
+    """Permite a un usuario iniciar sesión y devuelve el objeto Jugador autenticado o None."""
+    limpiar_pantalla()
+    print("\n--- ¡Hora de la acción! INICIO DE SESIÓN ---")
+    usuario_input = input("Tu usuario (correo electrónico): ").strip().lower()
+    password_input = input("Tu contraseña secreta: ").strip()
+
+    for user in global_usuarios:
+        if user.usuario == usuario_input and user.password == password_input:
+            print(f"¡Bienvenido de nuevo, {user.nombres}! Prepárate para la batalla.")
+            pausar_consola()
+            return user
+
+    print("Usuario o contraseña incorrectos. ¡Revisa bien e intenta de nuevo!")
+    pausar_consola()
+    return None
+
+# FUNCIONES PARA MENÚ DE ADMINISTRADOR
+
+def solicitar_datos_ninja(modo_edicion=False, ninja_existente=None):
+    """Solicita los datos para crear o editar un ninja."""
+    print("\n--- ¡Creando o ajustando un poderoso Ninja! ---")
+
+    nombre_ninja = input(f"Nombre del Ninja (actual: {ninja_existente.nombre}, deja en blanco para mantener si editas): ").strip() if modo_edicion and ninja_existente else input("Nombre del Ninja: ").strip()
+
+    if not nombre_ninja and not modo_edicion:
+        print("El nombre no puede estar vacío. ¡Operación cancelada!")
+        return None
+    elif not nombre_ninja and modo_edicion:
+        nombre_ninja = ninja_existente.nombre
+
+    if not modo_edicion:
+        if any(n.nombre.lower() == nombre_ninja.lower() for n in global_ninjas):
+            print("¡Uy! Ya existe un ninja con ese nombre. Por favor, elige otro. Operación cancelada.")
+            return None
+    elif modo_edicion and ninja_existente.nombre.lower() != nombre_ninja.lower():
+        if any(n.nombre.lower() == nombre_ninja.lower() and n is not ninja_existente for n in global_ninjas):
+            print("¡Error! El nuevo nombre ya está ocupado por otro ninja. Por favor, elige otro. Operación cancelada.")
+            return None
+
+    def leer_atributo(nombre_atributo, valor_actual=None):
+        while True:
+            valor_current = valor_actual if valor_actual is not None else "N/A"
+            prompt = f"Ingresa {nombre_atributo} (valor del 1 al 100, actual: {valor_current}): " if valor_actual is not None else f"Ingresa {nombre_atributo} (valor del 1 al 100): "
+            valor_str = input(prompt).strip()
+            if modo_edicion and valor_str == "":
+                return valor_actual
+            try:
+                valor = int(valor_str)
+                if 1 <= valor <= 100:
+                    return valor
+                else:
+                    print("¡Cuidado! El valor debe estar entre 1 y 100.")
+            except ValueError:
+                print("¡Error! Ingresa un número válido, por favor.")
