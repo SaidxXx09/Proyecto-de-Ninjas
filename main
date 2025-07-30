@@ -471,3 +471,14 @@ def consultar_ninja():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado. ¡Parece que no existe en esta aldea!")
     pausar_consola()
+def actualizar_ninja():
+    """Permite al administrador actualizar los atributos de un ninja existente."""
+    limpiar_pantalla()
+    print("\n--- ¡Mejorando un Ninja! ---")
+    if not global_ninjas:
+        print("No hay ninjas registrados para actualizar sus habilidades.")
+        pausar_consola()
+        return
+
+    nombre_buscar = input("Ingresa el nombre del ninja que quieres actualizar: ").strip()
+    ninja_a_actualizar = buscar_ninja_por_nombre(nombre_buscar)
