@@ -932,7 +932,134 @@ def _simular_combate_automatico(ninja1, ninja2):
         log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
    return ganador, "\n".join(log_resumido), "\n".join(log_detallado)
 
+def simular_torneo_completo():
+    """Simula un torneo completo con 16 ninjas (16avos, 8vos, 4tos, semifinal, final)."""
+    limpiar_pantalla()
+    print("\n--- 🎉⭐¡EL GRAN TORNEO NINJA COMIENZA!⭐🎉 ---")
+    print("                        🤜🤛")
 
+    NUM_PARTICIPANTES_TORNEO = 16
+
+    if len(global_ninjas) < NUM_PARTICIPANTES_TORNEO:
+        print(f"¡Necesitamos al menos {NUM_PARTICIPANTES_TORNEO} ninjas para un torneo completo!")
+        print(f"Actualmente solo hay {len(global_ninjas)} ninjas registrados.")
+        print("😡Pide al admin que agrege mas ninjas😡")
+        pausar_consola()
+        return
+
+    # Seleccionar 16 ninjas al azar para el torneo
+    # Usamos random.sample para asegurar que no haya repeticiones en los participantes iniciales
+    ninjas_torneo = random.sample(global_ninjas, NUM_PARTICIPANTES_TORNEO)
+    random.shuffle(ninjas_torneo) # Barajar para emparejamientos aleatorios
+
+    print(f"\n--- Participantes del Torneo ({NUM_PARTICIPANTES_TORNEO} Ninjas) ---")
+    for i, ninja in enumerate(ninjas_torneo):
+        print(f"  {i+1}. {ninja.nombre}")
+    pausar_consola()
+
+    log_torneo_completo_detallado = [] # Para un log completo si se desea guardar en el futuro
+    log_torneo_completo_detallado.append("--- ⚔️💀INICIO DE TORNEO NINJA COMPLETO💀⚔️ ---")
+    log_torneo_completo_detallado.append(f"Participantes: {', '.join([n.nombre for n in ninjas_torneo])}")
+
+    rondas = [
+        ("16avos de Final", 0.5), 
+        ("8vos de Final", 0.75),
+        ("4tos de Final", 1.0),
+        ("Semifinales", 1.5),
+        ("Final", 2.0)
+    ]
+
+    participantes_actuales = list(ninjas_torneo) # Copia para no modificar la lista original
+
+    for i, (nombre_ronda, pv_por_ronda) in enumerate(rondas):
+        if len(participantes_actuales) < 2 and nombre_ronda != "Final":
+            print(f"\nNo hay suficientes ninjas para la ronda de {nombre_ronda}. El torneo termina.")
+            log_torneo_completo_detallado.append(f"\nNo hay suficientes ninjas para la ronda de {nombre_ronda}. El torneo termina.")
+            break
+        elif len(participantes_actuales) == 1 and nombre_ronda != "Final":
+             print(f"\n¡Un campeón solitario ha emergido antes de la final en la ronda de {nombre_ronda}! El torneo concluye.")
+             campeon = participantes_actuales[0]
+             campeon.puntos_victoria += 2.0 # Se le da puntos de campeón
+             log_torneo_completo_detallado.append(f"\n¡CAMPEÓN DEL TORNEO (por defecto): {campeon.nombre}!")
+             break
+        elif len(participantes_actuales) == 0 and nombre_ronda != "Final":
+            print("\nTodos los ninjas fueron eliminados. El torneo no puede continuar.")
+            log_torneo_completo_detallado.append("\nTodos los ninjas fueron eliminados. El torneo no puede continuar.")
+            break
+
+        limpiar_pantalla()
+        print(f"\n--- RONDA: {nombre_ronda.upper()} ---")
+        print(f"--- ⚔️¡{len(participantes_actuales)} ninjas listos para la batalla!⚔️ ---")
+        log_torneo_completo_detallado.append(f"\n--- RONDA: {nombre_ronda.upper()} ---")
+        log_torneo_completo_detallado.append(f"Participantes en esta ronda: {', '.join([n.nombre for n in participantes_actuales])}")
+
+        ganadores_ronda = []
+        num_combates = len(participantes_actuales) // 2
+
+        random.shuffle(participantes_actuales)
+
+        for j in range(num_combates):
+            ninja1 = participantes_actuales[j * 2]
+            ninja2 = participantes_actuales[j * 2 + 1]
+
+            ganador, log_resumido_combate, log_detallado_combate = _simular_combate_automatico(ninja1, ninja2)
+
+            print(log_resumido_combate) # Solo se imprime el resumen
+            log_torneo_completo_detallado.append(f"\nCombate {j+1} ({nombre_ronda}): {ninja1.nombre} vs {ninja2.nombre}\n" + log_detallado_combate) # Se guarda el log detallado para referencia
+
+            if ganador:
+                ganadores_ronda.append(ganador)
+                ganador.puntos_victoria += pv_por_ronda
+            else:
+                # Si hay empate técnico y no se eligió un ganador por suerte, ambos son eliminados y no avanzan
+                pass
+
+        participantes_actuales = ganadores_ronda
+        if not participantes_actuales and i < len(rondas) - 1:
+            print("\nTodos los combates de esta ronda terminaron en empate o no hubo ganadores. El torneo no puede continuar.😪")
+            log_torneo_completo_detallado.append("\nTodos los combates de esta ronda terminaron en empate o no hubo ganadores. El torneo no puede continuar.")
+            break
+
+        # Muestra los ganadores de la ronda
+        if participantes_actuales:
+            print(f"\n--- 🏅¡GANADORES DE LA RONDA DE {nombre_ronda.upper()}!🏅 ---")
+            for winner in participantes_actuales:
+                print(f"  - {winner.nombre} avanza. (PV actuales: {winner.puntos_victoria:.1f})")
+            print("-" * 40)
+        else:
+            print("\n¡Nadie avanzó en esta ronda!😢 ¡El torneo es una masacre!💀")
+
+        pausar_consola() # Pausar después de cada resumen de ronda, no de cada combate
+
+        if nombre_ronda == "Final" and len(participantes_actuales) == 1:
+            campeon = participantes_actuales[0]
+            limpiar_pantalla()
+            print("\n" * 3)
+            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+            print(f"         🎉🎉🎉 ¡¡¡EL GRAN CAMPEÓN DEL TORNEO NINJA ES!!! 🎉🎉🎉")
+            print(f"                   * * * {campeon.nombre.upper()} * * *")
+            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+            print("\n" * 3)
+            log_torneo_completo_detallado.append(f"\n¡CAMPEÓN DEL TORNEO: {campeon.nombre}!")
+            break
+        elif nombre_ronda == "Final" and len(participantes_actuales) == 0:
+            limpiar_pantalla()
+            print("\n" * 3)
+            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+            print("                      *😮¡LA FINAL TERMINÓ EN UN ÉPICO EMPATE!🫡 *")
+            print("         * 😟LA SUERTE HA DECIDIDO Y NO HUBO UN CAMPEÓN CLARO EN ESTA OCASIÓN.😧 *")
+            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+            print("\n" * 3)
+            log_torneo_completo_detallado.append("\n¡TORNEO TERMINA EN EMPATE! (Resuelto por suerte o HP)")
+            break
+        elif nombre_ronda == "Final" and len(participantes_actuales) > 1:
+            print("\nError: Demasiados ganadores en el final.")
+            break
+
+
+    guardar_ninjas(global_ninjas) # Guardar los PV actualizados
+    print("\nResultados del torneo mostrados en consola. Los puntos de victoria han sido actualizados.")
+    pausar_consola()
 
 def consultar_ranking_ninjas():
     limpiar_pantalla()
