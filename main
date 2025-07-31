@@ -620,3 +620,20 @@ def _gestionar_habilidades_ninja(ninja):
                 print(f"¡Habilidad '{nombre_habilidad}' (Poder: {valor_habilidad}) agregada a {ninja.nombre}!")
                 print("¡No olvides guardar los cambios en ninjas.txt desde el menú principal del administrador!")
             pausar_consola()
+def gestionar_habilidades_ninja_principal():
+    """Permite al administrador seleccionar un ninja y luego gestionar sus habilidades."""
+    limpiar_pantalla()
+    print("\n--- ¡Aprende o desaprende jutsus! GESTIONAR HABILIDADES DE NINJA ---")
+    if not global_ninjas:
+        print("No hay ninjas registrados para gestionar sus habilidades.")
+        pausar_consola()
+        return
+
+    nombre_buscar = input("Ingresa el nombre del ninja al que le quieres gestionar sus jutsus: ").strip()
+    ninja_seleccionado = buscar_ninja_por_nombre(nombre_buscar)
+
+    if ninja_seleccionado:
+        _gestionar_habilidades_ninja(ninja_seleccionado)
+    else:
+        print(f"Ninja '{nombre_buscar}' no encontrado. ¡Quizás está en una misión secreta!")
+        pausar_consola()
