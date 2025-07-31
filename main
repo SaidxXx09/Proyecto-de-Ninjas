@@ -855,3 +855,79 @@ def simular_combate_interactivo():
     guardar_ninjas(global_ninjas)
     print("\nLos resultados de esta emocionante batalla se han guardado en el historial global.")
     pausar_consola()
+def _simular_combate_automatico(ninja1, ninja2):
+    n1_temp = Ninja(ninja1.nombre, ninja1.fuerza, ninja1.agilidad, ninja1.resistencia, ninja1.estilo)
+    n1_temp.habilidades = ArbolBinarioHabilidades.desde_habilidades_planas(ninja1.habilidades.obtener_habilidades_planas())
+    n2_temp = Ninja(ninja2.nombre, ninja2.fuerza, ninja2.agilidad, ninja2.resistencia, ninja2.estilo)
+    n2_temp.habilidades = ArbolBinarioHabilidades.desde_habilidades_planas(ninja2.habilidades.obtener_habilidades_planas())
+
+    log_resumido = []
+    log_detallado = []
+
+    log_resumido.append(f"  - {n1_temp.nombre} ({n1_temp.vida_actual:.0f} HP) vs {n2_temp.nombre} ({n2_temp.vida_actual:.0f} HP)")
+    log_detallado.append(f"--- COMBATE AUTOMÁTICO DETALLADO: {n1_temp.nombre} vs {n2_temp.nombre} ---")
+    log_detallado.append(f"Vida inicial: {n1_temp.nombre}: {n1_temp.vida_actual:.1f} HP | {n2_temp.nombre}: {n2_temp.vida_actual:.1f} HP")
+
+    turno = 1
+    ganador = None
+
+    while n1_temp.vida_actual > 0 and n2_temp.vida_actual > 0 and turno < 100:
+        log_detallado.append(f"\n--- TURNO {turno} ---")
+
+        # Turno de Ninja 1
+        habilidades_n1 = n1_temp.habilidades.obtener_habilidades_por_valor()
+        habilidad_n1_elegida = habilidades_n1[0] if habilidades_n1 else ("Ataque Básico", "ofensivo", (n1_temp.fuerza + n1_temp.agilidad) / 2)
+        ataque_n1_puntos = _calcular_puntuacion_combate(n1_temp, habilidad_n1_elegida[2], None)
+        daño_n2_recibido = max(0, ataque_n1_puntos - (n2_temp.resistencia * 1.0))
+        n2_temp.vida_actual -= daño_n2_recibido
+
+        log_detallado.append(f"  {n1_temp.nombre} usa **{habilidad_n1_elegida[0]}** y causa {daño_n2_recibido:.1f} de daño a {n2_temp.nombre}.")
+        log_detallado.append(f"  {n2_temp.nombre} HP restante: {n2_temp.vida_actual:.1f}")
+
+        if n2_temp.vida_actual <= 0:
+            ganador = ninja1
+            break
+
+        # Turno de Ninja 2
+        habilidades_n2 = n2_temp.habilidades.obtener_habilidades_por_valor()
+        habilidad_n2_elegida = habilidades_n2[0] if habilidades_n2 else ("Ataque Básico", "ofensivo", (n2_temp.fuerza + n2_temp.agilidad) / 2)
+        ataque_n2_puntos = _calcular_puntuacion_combate(n2_temp, habilidad_n2_elegida[2], None)
+        daño_n1_recibido = max(0, ataque_n2_puntos - (n1_temp.resistencia * 1.0))
+        n1_temp.vida_actual -= daño_n1_recibido
+
+        log_detallado.append(f"  {n2_temp.nombre} usa **{habilidad_n2_elegida[0]}** y causa {daño_n1_recibido:.1f} de daño a {n1_temp.nombre}.")
+        log_detallado.append(f"  {n1_temp.nombre} HP restante: {n1_temp.vida_actual:.1f}")
+
+        if n1_temp.vida_actual <= 0:
+            ganador = ninja2
+            break
+
+        turno += 1
+
+    if ganador:
+        log_resumido.append(f"    -> GANADOR: {ganador.nombre} (HP final: {n1_temp.vida_actual if ganador.nombre == n1_temp.nombre else n2_temp.vida_actual:.0f})")
+        log_detallado.append(f"\n--- FIN DEL COMBATE DETALLADO ---")
+        log_detallado.append(f"¡El ganador es: {ganador.nombre}!")
+        log_detallado.append(f"HP final de {n1_temp.nombre}: {n1_temp.vida_actual:.1f}")
+        log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
+    else:
+
+        log_detallado.append("\n--- FIN DEL COMBATE DETALLADO (Límite de Turnos) ---")
+
+        if n1_temp.vida_actual > n2_temp.vida_actual:
+            ganador = ninja1
+            log_resumido.append(f"    -> GANADOR (por HP restante): {ganador.nombre} (HP final: {n1_temp.vida_actual:.0f})")
+            log_detallado.append(f"Combate por límite de turnos. Ganador por HP restante: {ganador.nombre}")
+        elif n2_temp.vida_actual > n1_temp.vida_actual:
+            ganador = ninja2
+            log_resumido.append(f"    -> GANADOR (por HP restante): {ganador.nombre} (HP final: {n2_temp.vida_actual:.0f})")
+            log_detallado.append(f"Combate por límite de turnos. Ganador por HP restante: {ganador.nombre}")
+        else:
+            ganador_aleatorio = random.choice([ninja1, ninja2])
+            ganador = ganador_aleatorio
+            log_resumido.append(f"    -> GANADOR (por SUERTE): {ganador.nombre} (HP final: {n1_temp.vida_actual if ganador.nombre == n1_temp.nombre else n2_temp.vida_actual:.0f})")
+            log_detallado.append(f"¡Empate de HP al límite de turnos! La suerte ha elegido a: {ganador.nombre}")
+
+        log_detallado.append(f"HP final de {n1_temp.nombre}: {n1_temp.vida_actual:.1f}")
+        log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
+
