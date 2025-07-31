@@ -930,4 +930,5 @@ def _simular_combate_automatico(ninja1, ninja2):
 
         log_detallado.append(f"HP final de {n1_temp.nombre}: {n1_temp.vida_actual:.1f}")
         log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
+   return ganador, "\n".join(log_resumido), "\n".join(log_detallado)
 
