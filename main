@@ -529,3 +529,49 @@ def eliminar_ninja():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado para eliminar.")
     pausar_consola()
+def _gestionar_habilidades_ninja(ninja):
+    """Sub-menú para gestionar las habilidades de un ninja específico."""
+    limpiar_pantalla()
+    print(f"\n--- GESTIONANDO JUTSUS DE {ninja.nombre.upper()} ---")
+    while True:
+        print("1. ¡Enseñar una nueva habilidad!")
+        print("2. Ver habilidades (por nombre)")
+        print("3. Ver habilidades (por poder)")
+        print("4. Buscar una habilidad específica")
+        print("5. ¡Olvidar una habilidad!")
+        print("6. Volver al menú de administrador")
+
+        opcion = input("Elige qué quieres hacer con los jutsus de tu ninja: ").strip()
+
+        if opcion == '1':
+            nombre_habilidad = input("Nombre de la nueva habilidad: ").strip()
+            if not nombre_habilidad:
+                print("¡La habilidad necesita un nombre!")
+                pausar_consola()
+                continue
+
+            tipo_habilidad_valido = False
+            while not tipo_habilidad_valido:
+                tipo_habilidad = input("Tipo de habilidad (ofensivo, defensivo, equilibrio, generico): ").strip().lower()
+                if tipo_habilidad in ["ofensivo", "defensivo", "equilibrio", "generico"]:
+                    tipo_habilidad_valido = True
+                else:
+                    print("Tipo de habilidad inválido. Elige uno de los que aparecen.")
+
+            valor_habilidad = 0
+            while True:
+                try:
+                    valor_input = input("¿Cuánto poder tiene esta habilidad? (ej. 5, 10, 20): ").strip()
+                    valor_habilidad = int(valor_input)
+                    break
+                except ValueError:
+                    print("¡Eso no es un número! Ingresa un valor entero para el poder.")
+
+
+            if ninja.habilidades.buscar_habilidad(nombre_habilidad):
+                print(f"¡{ninja.nombre} ya conoce la habilidad '{nombre_habilidad}'!")
+            else:
+                ninja.habilidades.insertar_habilidad(nombre_habilidad, tipo_habilidad, valor_habilidad)
+                print(f"¡Habilidad '{nombre_habilidad}' (Poder: {valor_habilidad}) agregada a {ninja.nombre}!")
+                print("¡No olvides guardar los cambios en ninjas.txt desde el menú principal del administrador!")
+            pausar_consola()
