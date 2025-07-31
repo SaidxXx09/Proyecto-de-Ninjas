@@ -637,3 +637,38 @@ def gestionar_habilidades_ninja_principal():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado. ¡Quizás está en una misión secreta!")
         pausar_consola()
+def _calcular_puntuacion_combate(ninja, habilidad_usada_valor, log_list):
+    """
+    Calcula la puntuación de un ninja en un turno de combate,
+    incluyendo un factor aleatorio y la habilidad usada.
+    Si log_list es None, no se añaden detalles del cálculo, útil para combates automáticos.
+    """
+    puntos = 0
+
+    # Puntuación base por atributos y estilo
+    puntos_estilo = 0
+    if ninja.estilo == "Taijutsu":
+        puntos_estilo = ninja.fuerza * 1.0
+    elif ninja.estilo == "Ninjutsu":
+        puntos_estilo = ninja.agilidad * 1.0
+    elif ninja.estilo == "Genjutsu":
+        puntos_estilo = ninja.resistencia * 1.0
+    else: # Mixto
+        puntos_estilo = (ninja.fuerza + ninja.agilidad + ninja.resistencia) / 3
+    puntos += puntos_estilo
+
+    # Habilidad usada en este turno
+    puntos += habilidad_usada_valor
+    if log_list is not None: # Solo añadir a log si no es un combate de torneo automático
+        log_list.append(f"  Puntos base por atributos/estilo: {puntos_estilo:.2f}")
+        log_list.append(f"  Poder de habilidad usada: {habilidad_usada_valor}")
+
+
+    # Factor aleatorio
+    random_factor = random.uniform(0.9, 1.1) # Variación del 10%
+    puntos_finales = puntos * random_factor
+    if log_list is not None:
+        log_list.append(f"  Factor Aleatorio Aplicado (x{random_factor:.2f})")
+        log_list.append(f"  Puntos de ataque final de {ninja.nombre}: {puntos_finales:.2f}")
+
+    return puntos_finales
