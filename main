@@ -932,3 +932,34 @@ def _simular_combate_automatico(ninja1, ninja2):
         log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
    return ganador, "\n".join(log_resumido), "\n".join(log_detallado)
 
+
+
+def consultar_ranking_ninjas():
+    limpiar_pantalla()
+    print("\n--- ¡Los ninjas más fuertes! RANKING ---")
+    if not global_ninjas:
+        print("¡No hay ninjas registrados para ver su poder en el ranking!")
+        pausar_consola()
+        return
+
+    ninjas_ordenados_por_puntos = sorted(global_ninjas, key=lambda ninja: ninja.puntos_victoria, reverse=True)
+
+    print(f"{'Posición':<9} | {'Nombre del Ninja':<25} | {'Puntos de Victoria':<18}")
+    print("-" * 55)
+    for i, ninja in enumerate(ninjas_ordenados_por_puntos):
+        print(f"{i+1:<9} | {ninja.nombre:<25} | {ninja.puntos_victoria:<18.1f}")
+    pausar_consola()
+def consultar_historial_global_combates():
+    limpiar_pantalla()
+    print("\n--- ¡Revive las batallas! HISTORIAL GLOBAL DE COMBATES ---")
+    historial = cargar_historial_global_combates()
+    if not historial:
+        print("¡Todavía no hay combates registrados en el historial global! ¡Sé el primero en luchar!")
+        pausar_consola()
+        return
+
+    for i, entrada in enumerate(historial):
+        print(f"--- COMBATE {i+1} ---")
+        print(entrada)
+        print("-" * 60)
+    pausar_consola()
