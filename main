@@ -672,3 +672,41 @@ def _calcular_puntuacion_combate(ninja, habilidad_usada_valor, log_list):
         log_list.append(f"  Puntos de ataque final de {ninja.nombre}: {puntos_finales:.2f}")
 
     return puntos_finales
+def simular_combate_interactivo():
+    """Permite al jugador seleccionar su ninja y combatir interactivamente contra otro ninja."""
+    limpiar_pantalla()
+    print("\n--- ¡A luchar! COMBATE UNO CONTRA UNO ---")
+    global ninja_seleccionado_jugador
+
+    if not global_ninjas or len(global_ninjas) < 2:
+        print("¡Necesitamos al menos dos ninjas en la aldea para que haya una pelea!")
+        pausar_consola()
+        return
+
+    if not ninja_seleccionado_jugador:
+        print("¡Espera! Primero debes elegir a tu ninja en el menú del jugador (Opción 1: Elegir tu ninja).")
+        pausar_consola()
+        return
+
+    print(f"\n¡Tu ninja es: **{ninja_seleccionado_jugador.nombre}**!")
+
+    opciones_oponente = [n for n in global_ninjas if n.nombre.lower() != ninja_seleccionado_jugador.nombre.lower()]
+    if not opciones_oponente:
+        print("¡No hay oponentes disponibles para tu ninja! ¿Todos huyeron?")
+        pausar_consola()
+        return
+
+    print("\n--- Elige a tu oponente: ---")
+    for i, ninja_op in enumerate(opciones_oponente):
+        print(f"{i+1}. {ninja_op.nombre} (Fuerza: {ninja_op.fuerza}, Agilidad: {ninja_op.agilidad}, Resistencia: {ninja_op.resistencia})")
+
+    oponente_elegido = None
+    while oponente_elegido is None:
+        try:
+            seleccion = int(input(f"Ingresa el número de tu oponente (1-{len(opciones_oponente)}): ").strip())
+            if 1 <= seleccion <= len(opciones_oponente):
+                oponente_elegido = opciones_oponente[seleccion - 1]
+            else:
+                print("¡Opción no válida! Elige un número de la lista.")
+        except ValueError:
+            print("¡Error! Ingresa un número válido, por favor.")
