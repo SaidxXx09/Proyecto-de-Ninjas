@@ -36,6 +36,51 @@ class NodoHabilidad:
         self.tipo = tipo_habilidad
         self.valor = valor
         self.izquierda = None
+ elif opcion == '2': # Listar Alfabético (Inorden)
+            habilidades_planas = ninja.habilidades.obtener_habilidades_planas()
+            if habilidades_planas:
+                print("\n--- Habilidades (orden alfabético) ---")
+                for h_nombre, h_tipo, h_valor in sorted(habilidades_planas, key=lambda x: x[0].lower()):
+                    print(f"- {h_nombre} (Tipo: {h_tipo}, Poder: {h_valor})")
+            else:
+                print("¡Este ninja no tiene habilidades registradas todavía!")
+            pausar_consola()
+
+        elif opcion == '3': # Listar Por Valor/Daño
+            habilidades_por_valor = ninja.habilidades.obtener_habilidades_por_valor()
+            if habilidades_por_valor:
+                print("\n--- Habilidades (ordenadas por poder - de mayor a menor) ---")
+                for h_nombre, h_tipo, h_valor in habilidades_por_valor:
+                    print(f"- {h_nombre} (Tipo: {h_tipo}, Poder: {h_valor})")
+            else:
+                print("¡Este ninja no tiene habilidades registradas todavía!")
+            pausar_consola()
+
+        elif opcion == '4': # Buscar Habilidad
+            nombre_buscar = input("Ingresa el nombre de la habilidad que quieres buscar: ").strip()
+            habilidad_encontrada = ninja.habilidades.buscar_habilidad(nombre_buscar)
+            if habilidad_encontrada:
+                print(f"¡Habilidad encontrada!: {habilidad_encontrada.nombre} (Tipo: {habilidad_encontrada.tipo}, Poder: {habilidad_encontrada.valor})")
+            else:
+                print(f"La habilidad '{nombre_buscar}' no fue encontrada para {ninja.nombre}.")
+            pausar_consola()
+
+        elif opcion == '5': # Eliminar Habilidad
+            nombre_eliminar = input("Ingresa el nombre de la habilidad que quieres que olvide: ").strip()
+            if ninja.habilidades.eliminar_habilidad(nombre_eliminar):
+                print(f"¡Habilidad '{nombre_eliminar}' eliminada de {ninja.nombre} con éxito!")
+                print("¡No olvides guardar los cambios en ninjas.txt desde el menú principal del administrador!")
+            else:
+                print(f"La habilidad '{nombre_eliminar}' no fue encontrada o no pudo ser eliminada de {ninja.nombre}.")
+            pausar_consola()
+
+        elif opcion == '6':
+            print(f"Volviendo al menú del administrador.")
+            pausar_consola()
+            break
+        else:
+            print("Opción no válida. Por favor, elige un número de la lista.")
+            pausar_consola()
         self.derecha = None
 
      def __str__(self):
