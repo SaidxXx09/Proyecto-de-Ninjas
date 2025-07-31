@@ -503,3 +503,29 @@ def actualizar_ninja():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado para actualizar.")
     pausar_consola()
+def eliminar_ninja():
+    limpiar_pantalla()
+    print("\n--- ¡Despidiendo a un Ninja! ---")
+    if not global_ninjas:
+        print("No hay ninjas registrados para enviar de misión final (eliminar).")
+        pausar_consola()
+        return
+
+    nombre_buscar = input("Ingresa el nombre del ninja que deseas eliminar: ").strip()
+
+    ninja_a_eliminar = None
+    for i, ninja in enumerate(global_ninjas):
+        if ninja.nombre.lower() == nombre_buscar.lower():
+            ninja_a_eliminar = ninja
+            break
+
+    if ninja_a_eliminar:
+        confirmacion = input(f"¿Estás seguro de que quieres eliminar a '{ninja_a_eliminar.nombre}' para siempre? (s/n): ").strip().lower()
+        if confirmacion == 's':
+            global_ninjas.remove(ninja_a_eliminar)
+            print(f"¡Ninja '{ninja_a_eliminar.nombre}' ha sido eliminado! Recuerda guardar los cambios.")
+        else:
+            print("Eliminación de ninja cancelada. ¡Un valiente sigue en pie!")
+    else:
+        print(f"Ninja '{nombre_buscar}' no encontrado para eliminar.")
+    pausar_consola()
