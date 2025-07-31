@@ -792,3 +792,66 @@ def simular_combate_interactivo():
             break
 
         pausar_consola()
+        # Si el oponente fue derrotado, no hacemos su turno
+        if ninja_oponente_combate.vida_actual <= 0:
+            break
+
+        limpiar_pantalla()
+        print(f"\n--- TURNO {turno} ---")
+        print(f"** {ninja_jugador_combate.nombre} (Tú): {ninja_jugador_combate.vida_actual:.1f} HP **")
+        print(f"** {ninja_oponente_combate.nombre} (Oponente): {ninja_oponente_combate.vida_actual:.1f} HP **\n")
+
+        # Turno del oponente (IA)
+        log_combate_detallado.append(f"\n*** Turno de {ninja_oponente_combate.nombre} (Oponente) ***")
+        print(f"¡Es el turno de {ninja_oponente_combate.nombre}!")
+
+        habilidades_oponente = ninja_oponente_combate.habilidades.obtener_habilidades_por_valor()
+        if not habilidades_oponente:
+            habilidad_elegida_oponente = ("Ataque Básico", "ofensivo", (ninja_oponente_combate.fuerza + ninja_oponente_combate.agilidad) / 2)
+        else:
+            # IA simple: elige una habilidad ofensiva si la tiene, si no, la de mayor valor
+            habilidad_ofensiva_ia = next(((n,t,v) for n,t,v in habilidades_oponente if t == "ofensivo"), None)
+            if habilidad_ofensiva_ia:
+                habilidad_elegida_oponente = habilidad_ofensiva_ia
+            else:
+                habilidad_elegida_oponente = habilidades_oponente[0] # La de mayor valor
+
+        print(f"¡{ninja_oponente_combate.nombre} usa **{habilidad_elegida_oponente[0]}**!")
+        log_combate_detallado.append(f"{ninja_oponente_combate.nombre} usa '{habilidad_elegida_oponente[0]}'.")
+
+        ataque_oponente_puntos = _calcular_puntuacion_combate(ninja_oponente_combate, habilidad_elegida_oponente[2], log_combate_detallado)
+
+        daño_recibido_jugador = max(0, ataque_oponente_puntos - (ninja_jugador_combate.resistencia * 1.0)) # Resistencia reduce el daño (multiplicador de 1.0)
+        ninja_jugador_combate.vida_actual -= daño_recibido_jugador
+
+        print(f"¡{ninja_jugador_combate.nombre} recibe **{daño_recibido_jugador:.1f} de daño**!")
+        log_combate_detallado.append(f"{ninja_jugador_combate.nombre} HP antes: {ninja_jugador_combate.vida_actual + daño_recibido_jugador:.1f}, Daño recibido: {daño_recibido_jugador:.1f}")
+        log_combate_detallado.append(f"{ninja_jugador_combate.nombre} HP restante: {ninja_jugador_combate.vida_actual:.1f}")
+
+        if ninja_jugador_combate.vida_actual <= 0:
+            ganador_combate = ninja_oponente_combate
+            log_combate_detallado.append(f"\n¡{ninja_jugador_combate.nombre} ha sido derrotado por {ninja_oponente_combate.nombre}!")
+            break
+
+        turno += 1
+        pausar_consola()
+
+    limpiar_pantalla()
+    print("\n--- ¡FIN DEL COMBATE! ---")
+    if ganador_combate == ninja_jugador_combate:
+        print(f"¡FELICIDADES! ¡Tu ninja, **{ninja_jugador_combate.nombre}**, ha ganado la batalla!")
+        ninja_seleccionado_jugador.puntos_victoria += 1 # Actualizar PV del ninja real
+    else:
+        print(f"¡Oh no! Tu ninja, **{ninja_jugador_combate.nombre}**, ha sido derrotado por **{ninja_oponente_combate.nombre}**.")
+        # Aquí podrías decidir si el oponente gana PV o no, dependiendo de la lógica del juego.
+        # Por ahora, solo el jugador gana PV en el combate 1v1.
+        # Oponente real gana PV si lo deseas:
+        # oponente_elegido.puntos_victoria += 1
+
+
+    final_log = "\n".join(log_combate_detallado)
+    registrar_combate_global(final_log)
+
+    guardar_ninjas(global_ninjas)
+    print("\nLos resultados de esta emocionante batalla se han guardado en el historial global.")
+    pausar_consola()
