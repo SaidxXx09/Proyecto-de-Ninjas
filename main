@@ -936,55 +936,65 @@ def simular_torneo_completo():
     """Simula un torneo completo con 16 ninjas (16avos, 8vos, 4tos, semifinal, final)."""
     limpiar_pantalla()
     print("\n--- 🎉⭐¡EL GRAN TORNEO NINJA COMIENZA!⭐🎉 ---")
-    print("                        🤜🤛")
+    print("                        🤜🤛")
 
     NUM_PARTICIPANTES_TORNEO = 16
 
     if len(global_ninjas) < NUM_PARTICIPANTES_TORNEO:
         print(f"¡Necesitamos al menos {NUM_PARTICIPANTES_TORNEO} ninjas para un torneo completo!")
         print(f"Actualmente solo hay {len(global_ninjas)} ninjas registrados.")
-        print("😡Pide al admin que agrege mas ninjas😡")
+        print("😡Pide al admin que agregue mas ninjas😡")
         pausar_consola()
         return
 
     # Seleccionar 16 ninjas al azar para el torneo
-    # Usamos random.sample para asegurar que no haya repeticiones en los participantes iniciales
     ninjas_torneo = random.sample(global_ninjas, NUM_PARTICIPANTES_TORNEO)
-    random.shuffle(ninjas_torneo) # Barajar para emparejamientos aleatorios
+    random.shuffle(ninjas_torneo)
 
     print(f"\n--- Participantes del Torneo ({NUM_PARTICIPANTES_TORNEO} Ninjas) ---")
     for i, ninja in enumerate(ninjas_torneo):
-        print(f"  {i+1}. {ninja.nombre}")
+        print(f"  {i+1}. {ninja.nombre}")
     pausar_consola()
 
-    log_torneo_completo_detallado = [] # Para un log completo si se desea guardar en el futuro
+    log_torneo_completo_detallado = []
     log_torneo_completo_detallado.append("--- ⚔️💀INICIO DE TORNEO NINJA COMPLETO💀⚔️ ---")
     log_torneo_completo_detallado.append(f"Participantes: {', '.join([n.nombre for n in ninjas_torneo])}")
 
     rondas = [
-        ("16avos de Final", 0.5), 
+        ("16avos de Final", 0.5),
         ("8vos de Final", 0.75),
         ("4tos de Final", 1.0),
         ("Semifinales", 1.5),
         ("Final", 2.0)
     ]
 
-    participantes_actuales = list(ninjas_torneo) # Copia para no modificar la lista original
+    participantes_actuales = list(ninjas_torneo)
 
     for i, (nombre_ronda, pv_por_ronda) in enumerate(rondas):
-        if len(participantes_actuales) < 2 and nombre_ronda != "Final":
-            print(f"\nNo hay suficientes ninjas para la ronda de {nombre_ronda}. El torneo termina.")
-            log_torneo_completo_detallado.append(f"\nNo hay suficientes ninjas para la ronda de {nombre_ronda}. El torneo termina.")
-            break
-        elif len(participantes_actuales) == 1 and nombre_ronda != "Final":
-             print(f"\n¡Un campeón solitario ha emergido antes de la final en la ronda de {nombre_ronda}! El torneo concluye.")
-             campeon = participantes_actuales[0]
-             campeon.puntos_victoria += 2.0 # Se le da puntos de campeón
-             log_torneo_completo_detallado.append(f"\n¡CAMPEÓN DEL TORNEO (por defecto): {campeon.nombre}!")
-             break
-        elif len(participantes_actuales) == 0 and nombre_ronda != "Final":
-            print("\nTodos los ninjas fueron eliminados. El torneo no puede continuar.")
-            log_torneo_completo_detallado.append("\nTodos los ninjas fueron eliminados. El torneo no puede continuar.")
+        if len(participantes_actuales) < 2:
+            # Si solo queda un ninja (o ninguno), el torneo termina
+            if len(participantes_actuales) == 1:
+                campeon = participantes_actuales[0]
+                campeon.puntos_victoria += 2.0  # Puntos extra por ser campeón
+                limpiar_pantalla()
+                print("\n" * 3)
+                print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+                print(f"         *🎉🎉🎉 ¡¡¡EL GRAN CAMPEÓN DEL TORNEO NINJA ES!!! 🎉🎉🎉*")
+                print(f"                   * * * {campeon.nombre.upper()} * * *")
+                print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+                print("\n" * 3)
+                log_torneo_completo_detallado.append(f"\n¡CAMPEÓN DEL TORNEO: {campeon.nombre}!")
+            else:
+                limpiar_pantalla()
+                print("\n" * 3)
+                print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+                print("                      *😮¡LA FINAL TERMINÓ EN UN ÉPICO EMPATE!🫡 *")
+                print("         * 😟LA SUERTE HA DECIDIDO Y NO HUBO UN CAMPEÓN CLARO EN ESTA OCASIÓN.😧 *")
+                print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+                print("\n" * 3)
+                log_torneo_completo_detallado.append("\n¡TORNEO TERMINA EN EMPATE!")
+            
+            # El torneo finaliza aquí
             break
 
         limpiar_pantalla()
@@ -995,7 +1005,6 @@ def simular_torneo_completo():
 
         ganadores_ronda = []
         num_combates = len(participantes_actuales) // 2
-
         random.shuffle(participantes_actuales)
 
         for j in range(num_combates):
@@ -1004,60 +1013,26 @@ def simular_torneo_completo():
 
             ganador, log_resumido_combate, log_detallado_combate = _simular_combate_automatico(ninja1, ninja2)
 
-            print(log_resumido_combate) # Solo se imprime el resumen
-            log_torneo_completo_detallado.append(f"\nCombate {j+1} ({nombre_ronda}): {ninja1.nombre} vs {ninja2.nombre}\n" + log_detallado_combate) # Se guarda el log detallado para referencia
+            print(log_resumido_combate)
+            log_torneo_completo_detallado.append(f"\nCombate {j+1} ({nombre_ronda}): {ninja1.nombre} vs {ninja2.nombre}\n" + log_detallado_combate)
 
             if ganador:
                 ganadores_ronda.append(ganador)
                 ganador.puntos_victoria += pv_por_ronda
-            else:
-                # Si hay empate técnico y no se eligió un ganador por suerte, ambos son eliminados y no avanzan
-                pass
 
         participantes_actuales = ganadores_ronda
-        if not participantes_actuales and i < len(rondas) - 1:
-            print("\nTodos los combates de esta ronda terminaron en empate o no hubo ganadores. El torneo no puede continuar.😪")
-            log_torneo_completo_detallado.append("\nTodos los combates de esta ronda terminaron en empate o no hubo ganadores. El torneo no puede continuar.")
-            break
-
-        # Muestra los ganadores de la ronda
+        
         if participantes_actuales:
             print(f"\n--- 🏅¡GANADORES DE LA RONDA DE {nombre_ronda.upper()}!🏅 ---")
             for winner in participantes_actuales:
-                print(f"  - {winner.nombre} avanza. (PV actuales: {winner.puntos_victoria:.1f})")
+                print(f"  - {winner.nombre} avanza. (PV actuales: {winner.puntos_victoria:.1f})")
             print("-" * 40)
         else:
             print("\n¡Nadie avanzó en esta ronda!😢 ¡El torneo es una masacre!💀")
 
-        pausar_consola() # Pausar después de cada resumen de ronda, no de cada combate
+        pausar_consola()
 
-        if nombre_ronda == "Final" and len(participantes_actuales) == 1:
-            campeon = participantes_actuales[0]
-            limpiar_pantalla()
-            print("\n" * 3)
-            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
-            print(f"         🎉🎉🎉 ¡¡¡EL GRAN CAMPEÓN DEL TORNEO NINJA ES!!! 🎉🎉🎉")
-            print(f"                   * * * {campeon.nombre.upper()} * * *")
-            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
-            print("\n" * 3)
-            log_torneo_completo_detallado.append(f"\n¡CAMPEÓN DEL TORNEO: {campeon.nombre}!")
-            break
-        elif nombre_ronda == "Final" and len(participantes_actuales) == 0:
-            limpiar_pantalla()
-            print("\n" * 3)
-            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
-            print("                      *😮¡LA FINAL TERMINÓ EN UN ÉPICO EMPATE!🫡 *")
-            print("         * 😟LA SUERTE HA DECIDIDO Y NO HUBO UN CAMPEÓN CLARO EN ESTA OCASIÓN.😧 *")
-            print("         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
-            print("\n" * 3)
-            log_torneo_completo_detallado.append("\n¡TORNEO TERMINA EN EMPATE! (Resuelto por suerte o HP)")
-            break
-        elif nombre_ronda == "Final" and len(participantes_actuales) > 1:
-            print("\nError: Demasiados ganadores en el final.")
-            break
-
-
-    guardar_ninjas(global_ninjas) # Guardar los PV actualizados
+    guardar_ninjas(global_ninjas)
     print("\nResultados del torneo mostrados en consola. Los puntos de victoria han sido actualizados.")
     pausar_consola()
 
@@ -1158,3 +1133,146 @@ def ver_habilidades_ninja_jugador():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado. ¡Asegúrate de escribir bien el nombre!")
     pausar_consola()
+# --- MENÚS DE ROL ---
+
+def menu_administrador():
+    """Muestra el menú para el rol de Administrador."""
+    while True:
+        limpiar_pantalla()
+        print("\n--- ¡Bienvenido, Administrador de la Aldea Ninja! ---")
+        print("1. Reclutar nuevos ninjas")
+        print("2. Ver todos los ninjas en la aldea")
+        print("3. Inspeccionar los detalles de un ninja")
+        print("4. Mejorar los atributos de un ninja")
+        print("5. Retirar un ninja de la aldea")
+        print("6. Gestionar los jutsus (habilidades) de un ninja")
+        print("7. ¡Guardar todos los cambios de ninjas!")
+        print("8. Regresar al menú principal")
+
+        opcion = input("Elige tu próxima acción, Gran Administrador: ").strip()
+
+        if opcion == '1':
+            agregar_nuevo_ninja()
+        elif opcion == '2':
+            listar_ninjas()
+            pausar_consola()
+        elif opcion == '3':
+            consultar_ninja()
+        elif opcion == '4':
+            actualizar_ninja()
+        elif opcion == '5':
+            eliminar_ninja()
+        elif opcion == '6':
+            gestionar_habilidades_ninja_principal()
+        elif opcion == '7':
+            guardar_ninjas(global_ninjas)
+            print("¡Todos los cambios en los ninjas han sido guardados!")
+            pausar_consola()
+        elif opcion == '8':
+            print("Saliendo del panel de administrador. ¡Hasta pronto!")
+            pausar_consola()
+            break
+        else:
+            print("¡Opción no válida! Elige un número de la lista.")
+            pausar_consola()
+
+def menu_jugador():
+    """Muestra el menú para el rol de Jugador."""
+    global ninja_seleccionado_jugador
+
+    while True:
+        limpiar_pantalla()
+        print("\n--- 🙂‍↕️¡Bienvenido, Aspirante a Hokage!😃 ---\n   --- MENÚ DE JUGADOR ---   ")
+        if ninja_seleccionado_jugador:
+            print(f"Tu ninja actual: **{ninja_seleccionado_jugador.nombre}** (Listo para la acción!)")
+        else:
+            print("No has seleccionado un ninja. ¡Elige uno para empezar a combatir!")
+
+        print("1. ¡Elige a tu ninja para el combate!")
+        print("2. Descubre las habilidades de cualquier ninja")
+        print("3. ¡Inicia un Combate 1 vs 1 (Interactivo)! **¡Aquí la acción comienza!**")
+        print("4. ¡Participa en un Torneo Ninja! (Automático)")
+        print("5. Conoce a los ninjas más fuertes: ¡Ranking!")
+        print("6. Salir de la aventura y volver al menú principal")
+
+        opcion = input("¿Qué camino ninja quieres tomar?: ").strip()
+
+        if opcion == '1':
+            seleccionar_ninja_para_jugar()
+        elif opcion == '2':
+            ver_habilidades_ninja_jugador()
+        elif opcion == '3':
+            simular_combate_interactivo()
+        elif opcion == '4':
+            simular_torneo_completo()
+        elif opcion == '5':
+            consultar_ranking_ninjas()
+        elif opcion == '6':
+            print("Volviendo al menú principal. \n 👋¡Hasta la próxima misión!👋")
+            ninja_seleccionado_jugador = None
+            pausar_consola()
+            break
+        else:
+            print("¡Esa opción no existe en tu mapa ninja! Elige un número válido.")
+            pausar_consola()
+
+# --- MENÚ PRINCIPAL DE LA APLICACIÓN ---
+
+def main_menu():
+    """Menú principal que maneja el registro y la autenticación."""
+    limpiar_pantalla()
+    print("¡Bienvenido a ADMINITRADOR!")
+
+    global global_usuarios
+    global global_ninjas
+    global usuario_actual
+
+    global_usuarios = cargar_usuarios()
+    global_ninjas = cargar_ninjas()
+
+    # Crea el usuario administrador por defecto si no existe
+    admin_exists = any(u.usuario == "admin@polininjagames.com" for u in global_usuarios)
+    if not admin_exists:
+        admin_user = Jugador("Admin Poli", "00000000", 99, "admin@polininjagames.com", "admin123", "administrador")
+        global_usuarios.append(admin_user)
+        guardar_usuarios(global_usuarios)
+        print("\n            ¡Atención!              \nSe ha creado un usuario administrador por defecto:")
+        print("Usuario: 'admin@polininjagames.com'")
+        print("Contraseña: 'admin123'")
+        print("¡Con él podrás crear ninjas y gestionar el juego!")
+        pausar_consola()
+
+    while True:
+        limpiar_pantalla()
+        if usuario_actual:
+            if usuario_actual.rol == "administrador":
+                menu_administrador()
+            elif usuario_actual.rol == "jugador":
+                menu_jugador()
+            usuario_actual = None
+            global ninja_seleccionado_jugador
+            ninja_seleccionado_jugador = None # Deseleccionar ninja al desloguear usuario
+        else:
+            print("\n--- ⭐¡Prepárate para la aventura!⭐ ---\n        --- MENÚ PRINCIPAL ---")
+            print("1. ¡Únete a la Aldea Ninja! (Registrarse)")
+            print("2. ¡Vuelve a la acción! (Iniciar Sesión)")
+            print("3. ¡Hora de descansar! (Salir del juego)")
+
+            opcion = input("¿Qué harás ahora, joven ninja?: ").strip()
+
+            if opcion == '1':
+                registrar_nuevo_jugador()
+            elif opcion == '2':
+                usuario_actual = iniciar_sesion()
+            elif opcion == '3':
+                print("🥹¡Gracias por jugar a PoliNinjaGames!🥹\n Guardando los últimos pergaminos...")
+                guardar_usuarios(global_usuarios)
+                guardar_ninjas(global_ninjas)
+                break
+            else:
+                print("¡Esa no es una opción válida en el menú! Intenta de nuevo.")
+                pausar_consola()
+
+# --- INICIO DE LA APLICACIÓN ---
+if __name__ == "__main__":
+    main_menu()
