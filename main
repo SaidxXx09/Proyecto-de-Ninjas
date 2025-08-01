@@ -1112,3 +1112,49 @@ def seleccionar_ninja_para_jugar():
     else:
         print(f"Ninja '{nombre_elegido}' no encontrado. ¡Ese ninja debe estar escondido! Intenta de nuevo.")
     pausar_consola()
+def ver_habilidades_ninja_jugador():
+    limpiar_pantalla()
+    print("\n--- 💀¡Descubre los jutsus de los ninjas!💀 ---")
+    if not global_ninjas:
+        print("😢¡No hay ninjas registrados para ver sus habilidades!😢\n     ¡Pide al administrador que los cree!     ")
+        pausar_consola()
+        return
+
+    print("\n--- 🛖Ninjas en la aldea🌲: ---")
+    listar_ninjas()
+
+    nombre_buscar = input("🔎Ingresa el nombre del ninja cuyas habilidades deseas espiar: ").strip()
+    ninja_seleccionado = buscar_ninja_por_nombre(nombre_buscar)
+
+    if ninja_seleccionado:
+        print(f"\n--- Habilidades de **{ninja_seleccionado.nombre.upper()}** ---")
+
+        print("\n¿Cómo quieres ver sus habilidades?")
+        print("1. Por nombre (alfabético)")
+        print("2. Por poder (de mayor a menor)")
+
+        opcion_listado = input("Elige una opción: ").strip()
+
+        habilidades_a_mostrar = []
+        if opcion_listado == '1':
+            habilidades_a_mostrar = ninja_seleccionado.habilidades.obtener_habilidades_planas()
+            habilidades_a_mostrar = sorted(habilidades_a_mostrar, key=lambda x: x[0].lower())
+            print("\n--- HABILIDADES (ORDEN ALFABÉTICO) ---")
+        elif opcion_listado == '2':
+            habilidades_a_mostrar = ninja_seleccionado.habilidades.obtener_habilidades_por_valor()
+            print("\n--- HABILIDADES (ORDEN POR PODER) ---")
+        else:
+            print("😢¡Opción no válida!😢\n Mostrando por defecto en orden alfabético.")
+            habilidades_a_mostrar = ninja_seleccionado.habilidades.obtener_habilidades_planas()
+            habilidades_a_mostrar = sorted(habilidades_a_mostrar, key=lambda x: x[0].lower())
+
+        if habilidades_a_mostrar:
+            for nombre_h, tipo_h, valor_h in habilidades_a_mostrar:
+                print(f"- {nombre_h} (Tipo: {tipo_h}, Poder: {valor_h})")
+        else:
+            print(f"'{ninja_seleccionado.nombre}' no tiene habilidades registradas. ¡Ea un novato!")
+        print("-" * 30)
+
+    else:
+        print(f"Ninja '{nombre_buscar}' no encontrado. ¡Asegúrate de escribir bien el nombre!")
+    pausar_consola()
