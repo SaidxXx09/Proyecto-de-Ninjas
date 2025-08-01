@@ -1090,3 +1090,25 @@ def consultar_historial_global_combates():
         print(entrada)
         print("-" * 60)
     pausar_consola()
+def seleccionar_ninja_para_jugar():
+    limpiar_pantalla()
+    print("\n--- 👍¡Elige a tu compañero de batalla!✌️ ---")
+    global ninja_seleccionado_jugador
+
+    if not global_ninjas:
+        print("😪¡Parece que no hay ninjas en la aldea!😪\n --> El administrador debe crearlos primero.")
+        pausar_consola()
+        return
+
+    print("--- 🔮Ninjas disponibles para ti:🔮 ---")
+    listar_ninjas() 
+
+    nombre_elegido = input("Ingresa el nombre del ninja que quieres controlar en la batalla: ").strip()
+    ninja_encontrado = buscar_ninja_por_nombre(nombre_elegido)
+
+    if ninja_encontrado:
+        ninja_seleccionado_jugador = ninja_encontrado
+        print(f"😃¡Has elegido al grandioso **{ninja_seleccionado_jugador.nombre}** para tus aventuras!🙂‍↕️")
+    else:
+        print(f"Ninja '{nombre_elegido}' no encontrado. ¡Ese ninja debe estar escondido! Intenta de nuevo.")
+    pausar_consola()
