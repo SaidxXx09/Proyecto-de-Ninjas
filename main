@@ -227,12 +227,12 @@ def guardar_usuarios(usuarios):
                 f.write(usuario.a_cadena())
     except Exception as e:
         print(f"Error al guardar usuarios: {e}")
-
+#siempre agregar enconding utf 8 para evitar errores para que se impirman los emojis en los arivchos de texto
 def cargar_ninjas():
     """Carga los ninjas desde ninjas.txt."""
     ninjas = []
     try:
-        with open(ARCHIVO_NINJAS, 'r') as f:
+        with open(ARCHIVO_NINJAS, 'r' , encoding = "utf-8") as f:
             for linea in f:
                 ninja = Ninja.desde_cadena(linea)
                 if ninja:
