@@ -1,6 +1,7 @@
 import random
 import os
-#clase y jugador 
+
+# --- CLASE JUGADOR / USUARIO ---
 class Jugador:
     def __init__(self, nombres, identificacion, edad, usuario, password, rol="jugador"):
         self.nombres = nombres
@@ -16,7 +17,8 @@ class Jugador:
     def a_cadena(self):
         """Convierte el objeto Jugador a una cadena para guardar en .txt"""
         return f"{self.nombres},{self.identificacion},{self.edad},{self.usuario},{self.password},{self.rol}\n"
-    #co el @classmethod
+
+    @classmethod
     def desde_cadena(cls, cadena):
         """Crea un objeto Jugador desde una cadena de .txt"""
         partes = cadena.strip().split(',')
@@ -29,63 +31,20 @@ class Jugador:
             jugador = cls(nombres, identificacion, int(edad), usuario, password, rol)
             return jugador
         return None
-#nodos de arbol de habilidades
+
+# --- CLASE NODO PARA EL ÁRBOL DE HABILIDADES ---
 class NodoHabilidad:
     def __init__(self, nombre_habilidad, tipo_habilidad="generico", valor=0):
         self.nombre = nombre_habilidad
         self.tipo = tipo_habilidad
         self.valor = valor
         self.izquierda = None
- elif opcion == '2': # Listar Alfabético (Inorden)
-            habilidades_planas = ninja.habilidades.obtener_habilidades_planas()
-            if habilidades_planas:
-                print("\n--- Habilidades (orden alfabético) ---")
-                for h_nombre, h_tipo, h_valor in sorted(habilidades_planas, key=lambda x: x[0].lower()):
-                    print(f"- {h_nombre} (Tipo: {h_tipo}, Poder: {h_valor})")
-            else:
-                print("¡Este ninja no tiene habilidades registradas todavía!")
-            pausar_consola()
-
-        elif opcion == '3': # Listar Por Valor/Daño
-            habilidades_por_valor = ninja.habilidades.obtener_habilidades_por_valor()
-            if habilidades_por_valor:
-                print("\n--- Habilidades (ordenadas por poder - de mayor a menor) ---")
-                for h_nombre, h_tipo, h_valor in habilidades_por_valor:
-                    print(f"- {h_nombre} (Tipo: {h_tipo}, Poder: {h_valor})")
-            else:
-                print("¡Este ninja no tiene habilidades registradas todavía!")
-            pausar_consola()
-
-        elif opcion == '4': # Buscar Habilidad
-            nombre_buscar = input("Ingresa el nombre de la habilidad que quieres buscar: ").strip()
-            habilidad_encontrada = ninja.habilidades.buscar_habilidad(nombre_buscar)
-            if habilidad_encontrada:
-                print(f"¡Habilidad encontrada!: {habilidad_encontrada.nombre} (Tipo: {habilidad_encontrada.tipo}, Poder: {habilidad_encontrada.valor})")
-            else:
-                print(f"La habilidad '{nombre_buscar}' no fue encontrada para {ninja.nombre}.")
-            pausar_consola()
-
-        elif opcion == '5': # Eliminar Habilidad
-            nombre_eliminar = input("Ingresa el nombre de la habilidad que quieres que olvide: ").strip()
-            if ninja.habilidades.eliminar_habilidad(nombre_eliminar):
-                print(f"¡Habilidad '{nombre_eliminar}' eliminada de {ninja.nombre} con éxito!")
-                print("¡No olvides guardar los cambios en ninjas.txt desde el menú principal del administrador!")
-            else:
-                print(f"La habilidad '{nombre_eliminar}' no fue encontrada o no pudo ser eliminada de {ninja.nombre}.")
-            pausar_consola()
-
-        elif opcion == '6':
-            print(f"Volviendo al menú del administrador.")
-            pausar_consola()
-            break
-        else:
-            print("Opción no válida. Por favor, elige un número de la lista.")
-            pausar_consola()
         self.derecha = None
 
-     def __str__(self):
+    def __str__(self):
         return f"Habilidad: {self.nombre} ({self.tipo}, Valor: {self.valor})"
-        
+
+# --- CLASE ÁRBOL BINARIO DE HABILIDADES ---
 class ArbolBinarioHabilidades:
     def __init__(self):
         self.raiz = None
@@ -111,7 +70,8 @@ class ArbolBinarioHabilidades:
                 nodo_actual.derecha = nuevo_nodo
             else:
                 self._insertar_recursivo(nodo_actual.derecha, nuevo_nodo)
-def recorrido_inorden(self):
+
+    def recorrido_inorden(self):
         """Devuelve una lista de nombres de habilidades en recorrido inorden (Izquierda, Raíz, Derecha)."""
         habilidades = []
         self._inorden_recursivo(self.raiz, habilidades)
@@ -161,6 +121,7 @@ def recorrido_inorden(self):
             return self._buscar_recursivo(nodo.izquierda, nombre_buscar)
         else:
             return self._buscar_recursivo(nodo.derecha, nombre_buscar)
+
     def eliminar_habilidad(self, nombre):
         """Elimina una habilidad por su nombre del árbol. Retorna True si se eliminó, False en caso contrario."""
         if not self.buscar_habilidad(nombre):
@@ -194,7 +155,8 @@ def recorrido_inorden(self):
         while actual.izquierda is not None:
             actual = actual.izquierda
         return actual
-#se usara esta clase pra ninjas
+
+# --- CLASE NINJA ---
 class Ninja:
     def __init__(self, nombre, fuerza, agilidad, resistencia, estilo):
         self.nombre = nombre
@@ -215,6 +177,7 @@ class Ninja:
         habilidades_str = ";".join([f"{n}|{t}|{v}" for n, t, v in habilidades_planas])
         return (f"{self.nombre},{self.fuerza},{self.agilidad},{self.resistencia},"
                 f"{self.estilo},{self.puntos_victoria},{habilidades_str}\n")
+
     @classmethod
     def desde_cadena(cls, cadena):
         """Crea un objeto Ninja desde una cadena de .txt, reconstruyendo el árbol de habilidades."""
@@ -234,7 +197,9 @@ class Ninja:
                 ninja.habilidades = ArbolBinarioHabilidades.desde_habilidades_planas(habilidades_cargadas)
             return ninja
         return None
-# GESTIÓN DE ARCHIVOS
+
+# --- GESTIÓN DE ARCHIVOS ---
+
 ARCHIVO_USUARIOS = "usuarios.txt"
 ARCHIVO_NINJAS = "ninjas.txt"
 ARCHIVO_COMBATES_GLOBAL = "combates_global.txt" # Para historial global de combates
@@ -290,7 +255,7 @@ def guardar_ninjas(ninjas):
 def registrar_combate_global(log_combate):
     """Registra un combate en el historial global combates_global.txt."""
     try:
-        with open(ARCHIVO_COMBATES_GLOBAL, 'a') as f:
+        with open(ARCHIVO_COMBATES_GLOBAL, 'a',encoding="utf-8") as f:
             f.write(f"{log_combate}\n\n")
     except Exception as e:
         print(f"Error al registrar combate global: {e}")
@@ -309,13 +274,14 @@ def cargar_historial_global_combates():
         print(f"Error al cargar historial de combates global: {e}")
     return historial
 
-# listas
+
+# --- LISTAS GLOBALES PARA ALMACENAR DATOS EN MEMORIA ---
 global_usuarios = []
 global_ninjas = []
 usuario_actual = None
-ninja_seleccionado_jugador = None # ninja del jugador
+ninja_seleccionado_jugador = None # El ninja que el jugador "controla"
 
-#esta funcion es para que se limpie la consola
+# --- FUNCIONES AUXILIARES ---
 def limpiar_pantalla():
     """Limpia la consola."""
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -324,6 +290,7 @@ def pausar_consola():
     """Pausa la ejecución de la consola hasta que el usuario presione Enter."""
     input("Presiona Enter para continuar...")
 
+# --- FUNCION GLOBAL DE BUSQUEDA DE NINJA ---
 def buscar_ninja_por_nombre(nombre_buscar):
     """Busca un ninja en global_ninjas por su nombre (insensible a mayúsculas/minúsculas)."""
     for ninja in global_ninjas:
@@ -331,44 +298,49 @@ def buscar_ninja_por_nombre(nombre_buscar):
             return ninja
     return None
 
+# --- FUNCIONES DE AUTENTICACIÓN Y REGISTRO ---
+
 def registrar_nuevo_jugador():
     """Permite a un nuevo usuario registrarse en el sistema."""
     limpiar_pantalla()
     print("\n--- ¡Únete a la aventura ninja! REGISTRO ---")
     nombres = input("Ingresa tus nombres y apellidos: ").strip()
     identificacion = input("Ingresa tu número de identificación: ").strip()
-     while True:
-            try:
-                edad = int(input("Ingresa tu edad: ").strip())
-                break
-            except ValueError:
-                print("¡Ups! Edad inválida. Por favor, ingresa un número.")
-    
-        while True:
-            usuario_email = input("Ingresa tu correo electrónico (será tu usuario, ej. nombre.apellido@gmail.com): ").strip().lower()
-            if "@" not in usuario_email or "." not in usuario_email:
-                print("Formato de correo inválido. Asegúrate de incluir '@' y '.'")
-            elif any(u.usuario == usuario_email for u in global_usuarios):
-                print("Este correo ya está registrado. Intenta con otro o inicia sesión.")
-            else:
-                break
+
     while True:
-            password = input("Ingresa una contraseña (mín. 8 caracteres, 1 mayúscula, 1 número): ").strip()
-            if len(password) < 8:
-                print("La contraseña debe tener al menos 8 caracteres.")
-            elif not any(char.isupper() for char in password):
-                print("La contraseña debe contener al menos una letra mayúscula.")
-            elif not any(char.isdigit() for char in password):
-                print("La contraseña debe contener al menos un número.")
-            else:
-                break
-    
-        nuevo_jugador = Jugador(nombres, identificacion, edad, usuario_email, password, "jugador")
-        global_usuarios.append(nuevo_jugador)
-        guardar_usuarios(global_usuarios)
-        print("¡Registro exitoso! ¡Bienvenido a PoliNinjaGames! Ya puedes iniciar sesión.")
-        pausar_consola()
-        return True
+        try:
+            edad = int(input("Ingresa tu edad: ").strip())
+            break
+        except ValueError:
+            print("¡Ups! Edad inválida. Por favor, ingresa un número.")
+
+    while True:
+        usuario_email = input("Ingresa tu correo electrónico (será tu usuario, ej. nombre.apellido@gmail.com): ").strip().lower()
+        if "@" not in usuario_email or "." not in usuario_email:
+            print("Formato de correo inválido. Asegúrate de incluir '@' y '.'")
+        elif any(u.usuario == usuario_email for u in global_usuarios):
+            print("Este correo ya está registrado. Intenta con otro o inicia sesión.")
+        else:
+            break
+
+    while True:
+        password = input("Ingresa una contraseña (mín. 8 caracteres, 1 mayúscula, 1 número): ").strip()
+        if len(password) < 8:
+            print("La contraseña debe tener al menos 8 caracteres.")
+        elif not any(char.isupper() for char in password):
+            print("La contraseña debe contener al menos una letra mayúscula.")
+        elif not any(char.isdigit() for char in password):
+            print("La contraseña debe contener al menos un número.")
+        else:
+            break
+
+    nuevo_jugador = Jugador(nombres, identificacion, edad, usuario_email, password, "jugador")
+    global_usuarios.append(nuevo_jugador)
+    guardar_usuarios(global_usuarios)
+    print("¡Registro exitoso! ¡Bienvenido a PoliNinjaGames! Ya puedes iniciar sesión.")
+    pausar_consola()
+    return True
+
 def iniciar_sesion():
     """Permite a un usuario iniciar sesión y devuelve el objeto Jugador autenticado o None."""
     limpiar_pantalla()
@@ -386,7 +358,7 @@ def iniciar_sesion():
     pausar_consola()
     return None
 
-# FUNCIONES PARA MENÚ DE ADMINISTRADOR
+# --- FUNCIONES DE SOPORTE PARA MENÚ DE ADMINISTRADOR ---
 
 def solicitar_datos_ninja(modo_edicion=False, ninja_existente=None):
     """Solicita los datos para crear o editar un ninja."""
@@ -424,6 +396,7 @@ def solicitar_datos_ninja(modo_edicion=False, ninja_existente=None):
                     print("¡Cuidado! El valor debe estar entre 1 y 100.")
             except ValueError:
                 print("¡Error! Ingresa un número válido, por favor.")
+
     fuerza = leer_atributo("Fuerza", ninja_existente.fuerza if modo_edicion and ninja_existente else None)
     agilidad = leer_atributo("Agilidad", ninja_existente.agilidad if modo_edicion and ninja_existente else None)
     resistencia = leer_atributo("Resistencia", ninja_existente.resistencia if modo_edicion and ninja_existente else None)
@@ -447,7 +420,7 @@ def solicitar_datos_ninja(modo_edicion=False, ninja_existente=None):
     return (nombre_ninja, fuerza, agilidad, resistencia, estilo)
 
 def agregar_nuevo_ninja():
-    """Agrega un nuevo ninja a la lista global."""
+    """Agrega un nuevo ninja a la listad global"""
     limpiar_pantalla()
     print("\n--- ¡Forjando un nuevo guerrero ninja! ---")
     datos_ninja = solicitar_datos_ninja(modo_edicion=False)
@@ -480,14 +453,16 @@ def listar_ninjas():
         else:
             print("   Habilidades: Ninguna aún...")
         print("-" * 30)
+
 def consultar_ninja():
-    """Permite al administrador consultar los detalles de un ninja específico."""
+    """Permite al admin consultar los detalles de un ninja especifico."""
     limpiar_pantalla()
     print("\n--- Espiando los detalles de un Ninja... ---")
     if not global_ninjas:
         print("No hay ninjas registrados para investigar.")
         pausar_consola()
         return
+
     nombre_buscar = input("Ingresa el nombre del ninja que quieres consultar: ").strip()
     ninja_encontrado = buscar_ninja_por_nombre(nombre_buscar)
 
@@ -499,6 +474,7 @@ def consultar_ninja():
         print(f"Resistencia: {ninja_encontrado.resistencia}")
         print(f"Estilo: {ninja_encontrado.estilo}")
         print(f"Puntos de Victoria (PV): {ninja_encontrado.puntos_victoria:.1f}")
+
         habilidades_encontradas = ninja_encontrado.habilidades.obtener_habilidades_planas()
         if habilidades_encontradas:
             print("\nHabilidades (por nombre):")
@@ -516,6 +492,7 @@ def consultar_ninja():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado. ¡Parece que no existe en esta aldea!")
     pausar_consola()
+
 def actualizar_ninja():
     """Permite al administrador actualizar los atributos de un ninja existente."""
     limpiar_pantalla()
@@ -527,6 +504,7 @@ def actualizar_ninja():
 
     nombre_buscar = input("Ingresa el nombre del ninja que quieres actualizar: ").strip()
     ninja_a_actualizar = buscar_ninja_por_nombre(nombre_buscar)
+
     if ninja_a_actualizar:
         print(f"Ninja '{ninja_a_actualizar.nombre}' encontrado. ¡Vamos a mejorarlo!")
         print("Ingresa los nuevos datos (deja en blanco para mantener el actual):")
@@ -548,9 +526,11 @@ def actualizar_ninja():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado para actualizar.")
     pausar_consola()
+
 def eliminar_ninja():
+    """Permite al administrador eliminar un ninja de la lista."""
     limpiar_pantalla()
-    print("\n--- ¡Despidiendo a un Ninja! ---")
+    print("\n--- ¡Despidiendo a un Ninja!👋 ---")
     if not global_ninjas:
         print("No hay ninjas registrados para enviar de misión final (eliminar).")
         pausar_consola()
@@ -574,10 +554,11 @@ def eliminar_ninja():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado para eliminar.")
     pausar_consola()
+
 def _gestionar_habilidades_ninja(ninja):
-    """Sub-menú para gestionar las habilidades de un ninja específico."""
+    """Submene para gestionar las habilidades de un ninja específico."""
     limpiar_pantalla()
-    print(f"\n--- GESTIONANDO JUTSUS DE {ninja.nombre.upper()} ---")
+    print(f"\n--- 🧠⚔️GESTIONANDO JUTSUS DE {ninja.nombre.upper()} ---")
     while True:
         print("1. ¡Enseñar una nueva habilidad!")
         print("2. Ver habilidades (por nombre)")
@@ -620,6 +601,54 @@ def _gestionar_habilidades_ninja(ninja):
                 print(f"¡Habilidad '{nombre_habilidad}' (Poder: {valor_habilidad}) agregada a {ninja.nombre}!")
                 print("¡No olvides guardar los cambios en ninjas.txt desde el menú principal del administrador!")
             pausar_consola()
+
+
+        elif opcion == '2': # Listar Alfabético inorden
+            habilidades_planas = ninja.habilidades.obtener_habilidades_planas()
+            if habilidades_planas:
+                print("\n--- Habilidades (orden alfabético) ---")
+                for h_nombre, h_tipo, h_valor in sorted(habilidades_planas, key=lambda x: x[0].lower()):
+                    print(f"- {h_nombre} (Tipo: {h_tipo}, Poder: {h_valor})")
+            else:
+                print("¡Este ninja no tiene habilidades registradas todavía!")
+            pausar_consola()
+
+        elif opcion == '3': # Listar Por Valor/Daño
+            habilidades_por_valor = ninja.habilidades.obtener_habilidades_por_valor()
+            if habilidades_por_valor:
+                print("\n--- Habilidades (ordenadas por poder - de mayor a menor) ---")
+                for h_nombre, h_tipo, h_valor in habilidades_por_valor:
+                    print(f"- {h_nombre} (Tipo: {h_tipo}, Poder: {h_valor})")
+            else:
+                print("¡Este ninja no tiene habilidades registradas todavía!")
+            pausar_consola()
+
+        elif opcion == '4': # Buscar Habilidad
+            nombre_buscar = input("Ingresa el nombre de la habilidad que quieres buscar: ").strip()
+            habilidad_encontrada = ninja.habilidades.buscar_habilidad(nombre_buscar)
+            if habilidad_encontrada:
+                print(f"¡Habilidad encontrada!: {habilidad_encontrada.nombre} (Tipo: {habilidad_encontrada.tipo}, Poder: {habilidad_encontrada.valor})")
+            else:
+                print(f"La habilidad '{nombre_buscar}' no fue encontrada para {ninja.nombre}.")
+            pausar_consola()
+
+        elif opcion == '5': # Eliminar Habilidad
+            nombre_eliminar = input("Ingresa el nombre de la habilidad que quieres que olvide: ").strip()
+            if ninja.habilidades.eliminar_habilidad(nombre_eliminar):
+                print(f"¡Habilidad '{nombre_eliminar}' eliminada de {ninja.nombre} con éxito!")
+                print("¡No olvides guardar los cambios en ninjas.txt desde el menú principal del administrador!")
+            else:
+                print(f"La habilidad '{nombre_eliminar}' no fue encontrada o no pudo ser eliminada de {ninja.nombre}.")
+            pausar_consola()
+
+        elif opcion == '6':
+            print(f"Volviendo al menú del administrador.")
+            pausar_consola()
+            break
+        else:
+            print("Opción no válida. Por favor, elige un número de la lista.")
+            pausar_consola()
+
 def gestionar_habilidades_ninja_principal():
     """Permite al administrador seleccionar un ninja y luego gestionar sus habilidades."""
     limpiar_pantalla()
@@ -637,6 +666,9 @@ def gestionar_habilidades_ninja_principal():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado. ¡Quizás está en una misión secreta!")
         pausar_consola()
+
+# --- FUNCIONES DE SOPORTE PARA COMBATES INTERACTIVOS ---
+
 def _calcular_puntuacion_combate(ninja, habilidad_usada_valor, log_list):
     """
     Calcula la puntuación de un ninja en un turno de combate,
@@ -672,6 +704,7 @@ def _calcular_puntuacion_combate(ninja, habilidad_usada_valor, log_list):
         log_list.append(f"  Puntos de ataque final de {ninja.nombre}: {puntos_finales:.2f}")
 
     return puntos_finales
+
 def simular_combate_interactivo():
     """Permite al jugador seleccionar su ninja y combatir interactivamente contra otro ninja."""
     limpiar_pantalla()
@@ -710,6 +743,7 @@ def simular_combate_interactivo():
                 print("¡Opción no válida! Elige un número de la lista.")
         except ValueError:
             print("¡Error! Ingresa un número válido, por favor.")
+
     # IMPORTANTE: Creamos copias de los ninjas para que la vida actual no afecte sus estados globales
     ninja_jugador_combate = Ninja(
         ninja_seleccionado_jugador.nombre,
@@ -736,7 +770,7 @@ def simular_combate_interactivo():
     ninja_oponente_combate.puntos_victoria = oponente_elegido.puntos_victoria # Mantener PV iniciales
 
 
-    log_combate_detallado = [f"--- ¡COMIENZA LA BATALLA ÉPICA: {ninja_jugador_combate.nombre} vs {ninja_oponente_combate.nombre}! ---"]
+    log_combate_detallado = [f"--- 💥🎉⭐¡COMIENZA LA BATALLA ÉPICA: {ninja_jugador_combate.nombre} vs {ninja_oponente_combate.nombre}!⭐🎉💥 ---"]
 
     turno = 1
     ganador_combate = None
@@ -792,6 +826,7 @@ def simular_combate_interactivo():
             break
 
         pausar_consola()
+
         # Si el oponente fue derrotado, no hacemos su turno
         if ninja_oponente_combate.vida_actual <= 0:
             break
@@ -839,11 +874,14 @@ def simular_combate_interactivo():
     limpiar_pantalla()
     print("\n--- ¡FIN DEL COMBATE! ---")
     if ganador_combate == ninja_jugador_combate:
-        print(f"¡FELICIDADES! ¡Tu ninja, **{ninja_jugador_combate.nombre}**, ha ganado la batalla!")
+        print(f"¡FELICIDADES!")
+        print(f"😧¡Tu ninja, **{ninja_jugador_combate.nombre}**, ha ganado la batalla!😮")
+        print("💥FUE UNA PELEA MUY DURA💥")
+
         ninja_seleccionado_jugador.puntos_victoria += 1 # Actualizar PV del ninja real
     else:
-        print(f"¡Oh no! Tu ninja, **{ninja_jugador_combate.nombre}**, ha sido derrotado por **{ninja_oponente_combate.nombre}**.")
-        # Aquí podrías decidir si el oponente gana PV o no, dependiendo de la lógica del juego.
+        print(f"😭😭😭¡Oh no! Tu ninja, **{ninja_jugador_combate.nombre}**, ha sido derrotado por **{ninja_oponente_combate.nombre}**.😭😭😭")
+        # Aquí se podra decidir si el oponente gana PV o no, dependiendo de la lógica del juego.
         # Por ahora, solo el jugador gana PV en el combate 1v1.
         # Oponente real gana PV si lo deseas:
         # oponente_elegido.puntos_victoria += 1
@@ -855,7 +893,15 @@ def simular_combate_interactivo():
     guardar_ninjas(global_ninjas)
     print("\nLos resultados de esta emocionante batalla se han guardado en el historial global.")
     pausar_consola()
+
+# --- FUNCION PARA COMBATES AUTOMÁTICOS (USADA EN TORNEOS) ---
 def _simular_combate_automatico(ninja1, ninja2):
+    """
+    Simula un combate automático entre dos ninjas sin interacción del usuario.
+    Retorna el ninja ganador, un log resumido del combate y el log detallado.
+    Actualiza puntos de victoria directamente en los objetos ninja pasados.
+    """
+    # Creamos copias temporales para el combate
     n1_temp = Ninja(ninja1.nombre, ninja1.fuerza, ninja1.agilidad, ninja1.resistencia, ninja1.estilo)
     n1_temp.habilidades = ArbolBinarioHabilidades.desde_habilidades_planas(ninja1.habilidades.obtener_habilidades_planas())
     n2_temp = Ninja(ninja2.nombre, ninja2.fuerza, ninja2.agilidad, ninja2.resistencia, ninja2.estilo)
@@ -871,6 +917,7 @@ def _simular_combate_automatico(ninja1, ninja2):
     turno = 1
     ganador = None
 
+    # Límite de turnos para evitar bucles infinitos en casos de daño muy bajo
     while n1_temp.vida_actual > 0 and n2_temp.vida_actual > 0 and turno < 100:
         log_detallado.append(f"\n--- TURNO {turno} ---")
 
@@ -905,13 +952,15 @@ def _simular_combate_automatico(ninja1, ninja2):
         turno += 1
 
     if ganador:
+        # ¡Línea corregida aquí!
         log_resumido.append(f"    -> GANADOR: {ganador.nombre} (HP final: {n1_temp.vida_actual if ganador.nombre == n1_temp.nombre else n2_temp.vida_actual:.0f})")
         log_detallado.append(f"\n--- FIN DEL COMBATE DETALLADO ---")
         log_detallado.append(f"¡El ganador es: {ganador.nombre}!")
         log_detallado.append(f"HP final de {n1_temp.nombre}: {n1_temp.vida_actual:.1f}")
         log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
     else:
-
+        # En caso de que el combate termine por límite de turnos (turno >= 100)
+        # y no haya un claro ganador por vida a 0
         log_detallado.append("\n--- FIN DEL COMBATE DETALLADO (Límite de Turnos) ---")
 
         if n1_temp.vida_actual > n2_temp.vida_actual:
@@ -923,6 +972,7 @@ def _simular_combate_automatico(ninja1, ninja2):
             log_resumido.append(f"    -> GANADOR (por HP restante): {ganador.nombre} (HP final: {n2_temp.vida_actual:.0f})")
             log_detallado.append(f"Combate por límite de turnos. Ganador por HP restante: {ganador.nombre}")
         else:
+            # ¡Aquí entra la aleatoriedad si el HP es idéntico!
             ganador_aleatorio = random.choice([ninja1, ninja2])
             ganador = ganador_aleatorio
             log_resumido.append(f"    -> GANADOR (por SUERTE): {ganador.nombre} (HP final: {n1_temp.vida_actual if ganador.nombre == n1_temp.nombre else n2_temp.vida_actual:.0f})")
@@ -930,7 +980,9 @@ def _simular_combate_automatico(ninja1, ninja2):
 
         log_detallado.append(f"HP final de {n1_temp.nombre}: {n1_temp.vida_actual:.1f}")
         log_detallado.append(f"HP final de {n2_temp.nombre}: {n2_temp.vida_actual:.1f}")
-   return ganador, "\n".join(log_resumido), "\n".join(log_detallado)
+
+    return ganador, "\n".join(log_resumido), "\n".join(log_detallado)
+
 
 def simular_torneo_completo():
     """Simula un torneo completo con 16 ninjas (16avos, 8vos, 4tos, semifinal, final)."""
@@ -1036,11 +1088,15 @@ def simular_torneo_completo():
     print("\nResultados del torneo mostrados en consola. Los puntos de victoria han sido actualizados.")
     pausar_consola()
 
+
+# --- FUNCIONES DE SOPORTE PARA CONSULTAS ---
+
 def consultar_ranking_ninjas():
+    """Muestra un ranking de ninjas ordenados por sus puntos de victoria."""
     limpiar_pantalla()
-    print("\n--- ¡Los ninjas más fuertes! RANKING ---")
+    print("\n--- 💪¡Los ninjas más fuertes!💪 ---\n     --- RANKING ---     ")
     if not global_ninjas:
-        print("¡No hay ninjas registrados para ver su poder en el ranking!")
+        print("😢¡No hay ninjas registrados para ver su poder en el ranking!😢")
         pausar_consola()
         return
 
@@ -1051,12 +1107,14 @@ def consultar_ranking_ninjas():
     for i, ninja in enumerate(ninjas_ordenados_por_puntos):
         print(f"{i+1:<9} | {ninja.nombre:<25} | {ninja.puntos_victoria:<18.1f}")
     pausar_consola()
+
 def consultar_historial_global_combates():
+    """Muestra el historial global de todos los combates registrados."""
     limpiar_pantalla()
-    print("\n--- ¡Revive las batallas! HISTORIAL GLOBAL DE COMBATES ---")
+    print("\n--- 😌¡Revive las batallas!😌 ---\n--- HISTORIAL GLOBAL DE COMBATES ---")
     historial = cargar_historial_global_combates()
     if not historial:
-        print("¡Todavía no hay combates registrados en el historial global! ¡Sé el primero en luchar!")
+        print("😢¡Todavía no hay combates registrados en el historial global!😢\n        ¡Sé el primero en luchar!         ")
         pausar_consola()
         return
 
@@ -1065,7 +1123,12 @@ def consultar_historial_global_combates():
         print(entrada)
         print("-" * 60)
     pausar_consola()
+
+
+# --- FUNCIONES DE SOPORTE PARA JUGADORES ---
+
 def seleccionar_ninja_para_jugar():
+    """Permite al jugador elegir un ninja para controlarlo."""
     limpiar_pantalla()
     print("\n--- 👍¡Elige a tu compañero de batalla!✌️ ---")
     global ninja_seleccionado_jugador
@@ -1076,7 +1139,7 @@ def seleccionar_ninja_para_jugar():
         return
 
     print("--- 🔮Ninjas disponibles para ti:🔮 ---")
-    listar_ninjas() 
+    listar_ninjas() # Reutilizamos la función de listar
 
     nombre_elegido = input("Ingresa el nombre del ninja que quieres controlar en la batalla: ").strip()
     ninja_encontrado = buscar_ninja_por_nombre(nombre_elegido)
@@ -1087,7 +1150,9 @@ def seleccionar_ninja_para_jugar():
     else:
         print(f"Ninja '{nombre_elegido}' no encontrado. ¡Ese ninja debe estar escondido! Intenta de nuevo.")
     pausar_consola()
+
 def ver_habilidades_ninja_jugador():
+    """Permite al jugador seleccionar un ninja y ver sus habilidades."""
     limpiar_pantalla()
     print("\n--- 💀¡Descubre los jutsus de los ninjas!💀 ---")
     if not global_ninjas:
@@ -1133,6 +1198,7 @@ def ver_habilidades_ninja_jugador():
     else:
         print(f"Ninja '{nombre_buscar}' no encontrado. ¡Asegúrate de escribir bien el nombre!")
     pausar_consola()
+
 # --- MENÚS DE ROL ---
 
 def menu_administrador():
